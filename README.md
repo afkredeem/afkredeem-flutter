@@ -10,6 +10,14 @@ A Fan-app for your AFK Arena redemption codes
              src="README.images/google-play-badge.png"
              alt="Google Play badge">
     </a>
+    <br/>
+    <br/>
+<!--    <a href="https://www.apple.com/app-store/">-->
+<!--        <img align="center"-->
+<!--             src="README.images/app-store-badge.png"-->
+<!--             alt="Play Store badge">-->
+<!--    </a>-->
+    <p style="text-align:center">Coming to the App Store soon</p>
 </p>
 <br/>
 <br/>
@@ -87,7 +95,7 @@ Please refer to the [issues] section to review or submit any feature request or 
 
 ----
 
-[![reddit](README.images/reddit.png)][reddit-account]&nbsp; [![email](README.images/email.png)][email]
+[![afkredeem.com](README.images/globe.png)][afk-redeem]&nbsp; [![reddit](README.images/reddit.png)][reddit-account]&nbsp; [![email](README.images/email.png)][email]
 
 #### Disclosure
 AFK Redeem is a fan-app and is not affiliated with Lilith Games in any way.
