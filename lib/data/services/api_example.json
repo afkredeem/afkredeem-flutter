@@ -1,0 +1,268 @@
+{
+  "config": {
+    "redeemApiVersion": 1,
+    "androidAppApiVersionSupport": 1,
+    "iosAppApiVersionSupport": 1
+  },
+  "appMessages": [
+    {
+      "id": 1,
+      "content": "Hi, touch me to redeem codes manually",
+      "isSkippable": false,
+      "expiresAt": "2222-01-01"
+    }
+  ],
+  "codes": [
+    {
+      "code": "dqy4aq3pyw",
+      "addedAt": "2021-07-29",
+      "expiresAt": "2021-08-29",
+      "gifts": {
+        "common_scrolls": "30",
+        "diamonds": "888",
+        "labyrinth_tokens": "8888",
+        "hero_coins": "8888"
+      }
+    },
+    {
+      "code": "dwn8ekefbd",
+      "addedAt": "2021-06-30",
+      "expiresAt": "2021-07-29",
+      "gifts": {
+        "common_scrolls": "30",
+        "diamonds": "888",
+        "labyrinth_tokens": "8888",
+        "hero_coins": "8888"
+      }
+    },
+    {
+      "code": "xiaban886",
+      "addedAt": "2021-05-20",
+      "expiresAt": "2222-01-01",
+      "gifts": {
+        "diamonds": "500",
+        "hours/experience_8": "5",
+        "hours/gold_8": "5",
+        "hours/essence_8": "5"
+      }
+    },
+    {
+      "code": "311j4hw00d",
+      "addedAt": "2020-10-10",
+      "expiresAt": "2222-01-01",
+      "gifts": {
+        "diamonds": "100",
+        "gold": "100K"
+      }
+    },
+    {
+      "code": "Ch3atc0de",
+      "addedAt": "2020-10-10",
+      "expiresAt": "2222-01-01",
+      "gifts": {
+        "diamonds": "100",
+        "gold": "100K"
+      }
+    },
+    {
+      "code": "xmasl00t",
+      "addedAt": "2020-10-10",
+      "expiresAt": "2222-01-01",
+      "gifts": {
+        "diamonds": "100",
+        "gold": "100K"
+      }
+    },
+    {
+      "code": "d14m0nd5",
+      "addedAt": "2020-10-10",
+      "expiresAt": "2222-01-01",
+      "gifts": {
+        "diamonds": "100",
+        "gold": "100K"
+      }
+    },
+    {
+      "code": "badlijey666",
+      "addedAt": "2020-10-08",
+      "expiresAt": "2222-01-01",
+      "gifts": {
+        "diamonds": "100",
+        "gold": "100K"
+      }
+    },
+    {
+      "code": "101nc107h",
+      "addedAt": "2020-10-06",
+      "expiresAt": "2222-01-01",
+      "gifts": {
+        "diamonds": "100",
+        "gold": "100K"
+      }
+    },
+    {
+      "code": "uf4shqjngq",
+      "addedAt": "2020-05-01",
+      "expiresAt": "2222-01-01",
+      "gifts": {
+        "common_scrolls": "30"
+      }
+    },
+    {
+      "code": "afk888",
+      "addedAt": "2020-04-13",
+      "expiresAt": "2222-01-01",
+      "gifts": {
+        "diamonds": "300"
+      }
+    },
+    {
+      "code": "misevj66yi",
+      "addedAt": "2019-09-25",
+      "expiresAt": "2222-01-01",
+      "gifts": {
+        "diamonds": "500",
+        "common_scrolls": "5",
+        "rare_soulstones": "60"
+      }
+    },
+    {
+      "code": "PrinceOfPersia",
+      "addedAt": "2021-04-30",
+      "expiresAt": "2021-05-31",
+      "gifts": {
+        "diamonds": "500",
+        "gold": "500K",
+        "hero_essence": "500"
+      }
+    },
+    {
+      "code": "deq63bqdnu",
+      "addedAt": "2021-06-18",
+      "expiresAt": "2021-06-22",
+      "gifts": {
+        "diamonds": "300",
+        "elite_soulstones": "20"
+      }
+    },
+    {
+      "code": "d39rqrbdcr",
+      "addedAt": "2021-06-13",
+      "expiresAt": "2021-06-17",
+      "gifts": {
+        "diamonds": "300",
+        "elite_soulstones": "20"
+      }
+    },
+    {
+      "code": "ck4kjutz6k",
+      "addedAt": "2021-05-31",
+      "expiresAt": "2021-06-03",
+      "gifts": {
+        "diamonds": "300",
+        "elite_soulstones": "20"
+      }
+    },
+    {
+      "code": "aaz27uvgfi",
+      "addedAt": "2021-04-06",
+      "expiresAt": "2021-05-06",
+      "gifts": {
+        "diamonds": "3000",
+        "faction_scrolls": "10",
+        "common_scrolls": "10",
+        "stargazing_cards": "10"
+      }
+    },
+    {
+      "code": "ayqcttC36x",
+      "addedAt": "2021-04-11",
+      "expiresAt": "2021-05-11",
+      "gifts": {
+        "diamonds": "200",
+        "gold": "200K"
+      }
+    },
+    {
+      "code": "bprc9kun5i",
+      "addedAt": "2021-04-30",
+      "expiresAt": "2021-05-04",
+      "gifts": {
+        "diamonds": "300",
+        "elite_soulstones": "20"
+      }
+    },
+    {
+      "code": "7k8n2s9bnx",
+      "addedAt": "2020-12-19",
+      "expiresAt": "2020-12-25",
+      "gifts": {
+        "diamonds": "300",
+        "elite_soulstones": "20"
+      }
+    },
+    {
+      "code": "am2fc6hqmj",
+      "addedAt": "2021-03-30",
+      "expiresAt": "2021-04-30",
+      "gifts": {
+        "diamonds": "300",
+        "elite_soulstones": "20"
+      }
+    },
+    {
+      "code": "8vws9uf6f5",
+      "addedAt": "2021-02-11",
+      "expiresAt": "2021-03-12",
+      "gifts": {
+        "faction_scrolls": "30",
+        "diamonds": "3000"
+      }
+    },
+    {
+      "code": "persona5",
+      "addedAt": "2020-12-30",
+      "expiresAt": "2021-02-28",
+      "gifts": {
+        "hero_essence": "500",
+        "diamonds": "500",
+        "gold": "500K"
+      }
+    },
+    {
+      "code": "9qgzux8k82",
+      "addedAt": "2021-02-25",
+      "expiresAt": "2021-02-28",
+      "gifts": {
+        "diamonds": "300",
+        "elite_soulstones": "20"
+      }
+    },
+    {
+      "code": "9biwud4xrt",
+      "addedAt": "2021-02-13",
+      "expiresAt": "2021-02-16",
+      "gifts": {
+        "diamonds": "300",
+        "elite_soulstones": "20"
+      }
+    },
+    {
+      "code": "76shwcv6e4",
+      "addedAt": "2020-12-01",
+      "expiresAt": "2020-12-05",
+      "gifts": {
+        "diamonds": "300",
+        "elite_soulstones": "20"
+      }
+    },
+    {
+      "code": "happy2021",
+      "addedAt": "2021-01-04",
+      "expiresAt": "2021-02-01",
+      "gifts": {
+        "faction_scrolls": "30"
+      }
+    }
+  ]
+}

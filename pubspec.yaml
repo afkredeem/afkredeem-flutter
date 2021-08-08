@@ -1,0 +1,43 @@
+name: afk_redeem
+description: AFK Arena automatic redemption code redeemer
+
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.12.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.2
+  url_launcher: ^6.0.7
+  intl: ^0.17.0
+  pull_to_refresh: ^2.0.0
+  shared_preferences: ^2.0.6
+  dio: ^4.0.0
+  dio_cookie_manager: ^2.0.0
+  animated_text_kit: ^4.2.1
+  carousel_slider: ^4.0.0
+  bubble: ^1.2.1
+  flutter_html: ^2.1.1
+  html: ^0.15.0
+  firebase_core: ^1.4.0
+  firebase_messaging: ^10.0.4
+  firebase_analytics: ^8.2.0
+  firebase_crashlytics: ^2.1.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
+  assets:
+    - images/
+    - images/gifts/
+    - images/gifts/hours/
+    - images/celestial/
+    - images/hypogean/
+    - images/game_screenshots/
