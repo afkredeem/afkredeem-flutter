@@ -48,19 +48,21 @@ The app doesn't store any information outside the phone.\
 Moreover, the app also does not require local storage permissions.\
 Everything the app saves locally boils down to simple key value stores provided by either Android / iOS platforms (aka [shared_preferences])\
 \
-On top of trivial UI flags (e.g. disclosure consent, hypogean/celestial mode or whether brutus already invited you to touch him to redeem codes manually),
-the app saves only the `user ID` you entered, and the current list of codes.
+The only user-generated data saved on the phone is the `user ID` entered by the user on first startup.\
+Other than that the app saves its internal configuration (redeem api supported versions, codes list, etc.) and trivial UI flags (e.g. disclosure consent, hypogean/celestial mode or whether specific brutus messages were already shown).
 
 ## What is sent & Where to
 The app uses 2.5 network interfaces.
-- Downloading the current list of codes from afkredeem.com upon startup / refresh (simple GET)
-  > See [api_manager.dart]
+- Downloading the current list of codes from afkredeem.com upon startup / refresh\
+  Receiving also in the same GET: general configuration such as redeemer api version support, brutus messages, etc.\
+  \+ a few server-side dialogs UI (plain html), e.g. `about` and redeem api versioning support updates.
+  > See [afk_redeem_api.dart]
 - Redeeming the codes using Lilith Games [redemption codes REST API][reddit-redemption-api].\
   The app sends the user ID and verifies the verification code, fetches user identity, and consumes any gift codes selected.
   The app uses in-memory cookies to maintain the session with Lilith Games API, however none of the cookies are stored.
   All of the above is sent directly and only to Lilith Games, while none of the byproducts are stored anywhere.
-  > See [redeemer.dart]
-- The app issues push notifications utilizing the [Firebase Cloud Messaging][firebase-messaging] solution ⬇.
+  > See [code_redeemer.dart]
+- The app issues push notifications utilizing the [Firebase Cloud Messaging][firebase-messaging] solution (see below).
   This messaging framework uses platform-specific transport service (Android / iOS),
   facilitating notifications while saving the app the hassle of running any battery guzzling background workers.
 
@@ -71,12 +73,12 @@ Since both Android & iOS provide means to silence / mute any app's notifications
 
 ## Analytics & Crashlytics
 The app uses [Firebase Analytics][firebase-analytics] and [Firebase Crashlytics][firebase-crashlytics] services.\
-As far as analytics go, only the most basic default analytics firebase has to offer are (anonymously collected.\
+As far as analytics go, only the most basic default analytics firebase has to offer are (anonymously) collected.\
 With regards to crashlytics, any error / crash the app experiences is anonymously reported via firebase.\
 Nevertheless, the app presents a disclosure dialog on first startup summarizing the above information with a link to this repo.
 
 ## Funds
-Well, there aren't any really 😅.\
+Well, there aren't any really 😅\
 Any imaginable expense (from the [afkredeem.com][afk-redeem] domain, through app stores costs, to development time & effort), was personally paid for.\
 Which brings us to the next point.
 
@@ -109,6 +111,6 @@ AFK Redeem is a fan-app and is not affiliated with Lilith Games in any way.
 [email]: mailto:afkredeem@gmail.com
 
 [license]: LICENSE.md
-[api_manager.dart]: lib/data/services/afk_redeem_api.dart
-[redeemer.dart]: lib/data/services/code_redeemer.dart
+[afk_redeem_api.dart]: lib/data/services/afk_redeem_api.dart
+[code_redeemer.dart]: lib/data/services/code_redeemer.dart
 [issues]: https://github.com/afkredeem/afkredeem-flutter/issues
