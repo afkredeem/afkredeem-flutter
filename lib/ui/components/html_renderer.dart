@@ -58,20 +58,6 @@ class HtmlRenderer {
             ),
           );
         },
-        "cupertino-icon": (RenderContext context, Widget child) {
-          var attributes = context.tree.element!.attributes;
-          return Icon(
-            IconData(
-              int.parse(attributes['code']!),
-              fontFamily: CupertinoIcons.iconFont,
-              fontPackage: CupertinoIcons.iconFontPackage,
-            ),
-            color: AppearanceManager().color.fromString[attributes['color']!],
-            size: attributes['size'] != null
-                ? double.tryParse(attributes['size']!)
-                : null,
-          );
-        },
         "button-link": (RenderContext context, Widget child) {
           var attributes = context.tree.element!.attributes;
           if (attributes['id'] != null && attributes['href'] != null) {
@@ -80,7 +66,7 @@ class HtmlRenderer {
           return null;
         }
       },
-      tagsList: Html.tags..addAll(["color", "cupertino-icon", "button-link"]),
+      tagsList: Html.tags..addAll(["color", "button-link"]),
     );
   }
 
