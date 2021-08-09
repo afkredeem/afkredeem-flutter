@@ -1,18 +1,18 @@
 # AFK Redeem
 
-An app for your AFK Arena redemption codes
+Your AFK Arena redemption codes simplified
 
 <br/>
 <br/>
 <p align="center">
-    <a href="https://play.google.com/store/apps">
+    <a href="https://play.google.com/store/apps" target="_blank">
         <img align="center"
              src="README.images/google-play-badge.png"
              alt="Google Play badge">
     </a>
     <br/>
     <br/>
-<!--    <a href="https://www.apple.com/app-store/">-->
+<!--    <a href="https://www.apple.com/app-store/" target="_blank">-->
         <img align="center"
              src="README.images/app-store-soon.png"
              alt="Play Store badge">
