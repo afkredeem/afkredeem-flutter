@@ -1,6 +1,6 @@
 # AFK Redeem
 
-A Fan-app for your AFK Arena redemption codes
+An app for your AFK Arena redemption codes
 
 <br/>
 <br/>
@@ -13,11 +13,10 @@ A Fan-app for your AFK Arena redemption codes
     <br/>
     <br/>
 <!--    <a href="https://www.apple.com/app-store/">-->
-<!--        <img align="center"-->
-<!--             src="README.images/app-store-badge.png"-->
-<!--             alt="Play Store badge">-->
+        <img align="center"
+             src="README.images/app-store-soon.png"
+             alt="Play Store badge">
 <!--    </a>-->
-    <p style="text-align:center">Coming to the App Store soon</p>
 </p>
 <br/>
 <br/>
