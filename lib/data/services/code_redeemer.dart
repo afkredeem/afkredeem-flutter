@@ -91,7 +91,7 @@ class CodeRedeemer {
           'Redeemer reading response from ${kLinks.lilithRedeemHost}${kUris.usersUri}',
       json: response.data as Map<String, dynamic>,
     );
-    if (jsonReader.tryRead('info') ?? 'not-ok' == 'ok') {
+    if ((jsonReader.tryRead('info') ?? 'not-ok') == 'ok') {
       Map<String, dynamic> data = jsonReader.tryRead('data') ?? {};
       List<dynamic> users = jsonReader.tryReadFrom(data, 'users') ?? [];
       for (Map<String, dynamic> user in users) {
