@@ -16,7 +16,7 @@ AlertDialog redemptionSummaryDialog(
 ) {
   bool hasAlreadyReported = false;
   return AlertDialog(
-    title: Text('Redemption Summary'),
+    title: Text('Summary'),
     content: IntrinsicHeight(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -65,19 +65,21 @@ AlertDialog redemptionSummaryDialog(
               AppearanceManager().color.yellow),
           codesList(context, redeemedCodes, 'Redeemed',
               AppearanceManager().color.green),
-          Column(
-            children: [
-              Text(
-                redeemedCodes.isNotEmpty ? '\n$username' : '',
-                style: TextStyle(color: AppearanceManager().color.main),
-              ),
-              Text(
-                redeemedCodes.isNotEmpty
-                    ? '🎁🎁🎁 Your prizes await 🎁🎁🎁'
-                    : '',
-                style: TextStyle(color: AppearanceManager().color.main),
-              )
-            ],
+          Center(
+            child: Column(
+              children: [
+                Text(
+                  redeemedCodes.isNotEmpty ? '\n$username' : '',
+                  style: TextStyle(color: AppearanceManager().color.main),
+                ),
+                Text(
+                  redeemedCodes.isNotEmpty
+                      ? '🎁🎁🎁 Your prizes await 🎁🎁🎁'
+                      : '',
+                  style: TextStyle(color: AppearanceManager().color.main),
+                )
+              ],
+            ),
           ),
         ],
       ),
