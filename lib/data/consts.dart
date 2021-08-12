@@ -16,11 +16,13 @@ const kDefaultAppInStoreApiVersionSupport = 1000000;
 
 // mixin wins over class cause it prevents the compiler from complaining about naming conventions
 mixin kLinks {
-  // static const bool emulateLilithRedeem = true;
-  static const bool emulateLilithRedeem = false;
+  // static const bool _emulateLilithRedeem = true;
+  static const bool _emulateLilithRedeem = false;
+  // static const bool _emulateAfkRedeemApi = true;
+  static const bool _emulateAfkRedeemApi = false;
 
-  // static const bool emulateAfkRedeemApi = true;
-  static const bool emulateAfkRedeemApi = false;
+  // static const bool _toggleEmulatedRedeemResponses = true;
+  static const bool _toggleEmulatedRedeemResponses = false;
 
   static const String iosEmulator = 'http://127.0.0.1/';
   static const String androidEmulator = 'http://10.0.2.2/';
@@ -32,7 +34,7 @@ mixin kLinks {
   static const String githubProject =
       'https://github.com/afkredeem/afkredeem-flutter';
 
-  static final String lilithRedeemHost = kReleaseMode || !emulateLilithRedeem
+  static final String lilithRedeemHost = kReleaseMode || !_emulateLilithRedeem
       ? _lilithRedeem
       : Platform.isAndroid
           ? androidEmulator
@@ -40,7 +42,7 @@ mixin kLinks {
               ? iosEmulator
               : _lilithRedeem;
 
-  static final String afkRedeemApiHost = kReleaseMode || !emulateAfkRedeemApi
+  static final String afkRedeemApiHost = kReleaseMode || !_emulateAfkRedeemApi
       ? afkRedeem
       : Platform.isAndroid
           ? androidEmulator
@@ -49,6 +51,9 @@ mixin kLinks {
               : afkRedeem;
 
   static final afkRedeemApiUrl = afkRedeemApiHost + kUris.afkRedeemApi;
+
+  static const bool toggleEmulatedRedeemResponses =
+      _toggleEmulatedRedeemResponses && !kReleaseMode;
 }
 
 mixin kUris {

@@ -111,8 +111,10 @@ class CodeRedeemer {
 
     await Future.forEach(redemptionCodes,
         (RedemptionCode redemptionCode) async {
-      Map<String, dynamic> queryParams = {};
-      // queryParams['toggle-responses'] = null; // test server option
+      Map<String, dynamic>? queryParams;
+      if (kLinks.toggleEmulatedRedeemResponses) {
+        queryParams = {'toggle-responses': null}; // mock server option
+      }
       String postData = '''
       {
           "cdkey": "${redemptionCode.code}",
