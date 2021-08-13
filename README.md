@@ -5,7 +5,7 @@ Your AFK Arena redemption codes simplified
 <br/>
 <br/>
 <p align="center">
-    <a href="https://play.google.com/store/apps" target="_blank">
+    <a href="https://play.google.com/store/apps/details?id=com.afkredeem" target="_blank">
         <img align="center"
              src="README.images/google-play-badge.png"
              alt="Google Play badge">
