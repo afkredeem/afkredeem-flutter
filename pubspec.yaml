@@ -23,6 +23,7 @@ dependencies:
   bubble: ^1.2.1
   flutter_html: ^2.1.1
   html: ^0.15.0
+  device_apps: ^2.1.1
   firebase_core: ^1.4.0
   firebase_messaging: ^10.0.4
   firebase_analytics: ^8.2.0

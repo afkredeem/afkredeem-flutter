@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:device_apps/device_apps.dart';
 
 import 'package:afk_redeem/data/consts.dart';
 import 'package:afk_redeem/data/redemption_code.dart';
@@ -53,9 +54,12 @@ class RedeemDialog {
         Navigator.pop(context); // pop this dialog
         redeemRunningCallback();
       },
+      style: ElevatedButton.styleFrom(
+        minimumSize: Size(40, 40),
+      ),
       child: Text(
         'Redeem!',
-        style: TextStyle(fontSize: 16.0),
+        style: TextStyle(fontSize: 18.0),
       ),
     );
 
@@ -84,16 +88,20 @@ class RedeemDialog {
             redeemButton.onPressed?.call();
           },
         ),
-        trailing: carouselDialogHelpButton(
-          context: context,
-          carouselItems: [
-            Image.asset('images/game_screenshots/player.jpg'),
-            Image.asset('images/game_screenshots/game_settings.jpg'),
-            Image.asset('images/game_screenshots/verification_code.jpg'),
-          ],
-        ),
+        trailing: _verificationCodeCarouselDialog(context),
       ),
-      actions: [redeemButton],
+      actions: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 2.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              _openAfkArenaButton,
+              redeemButton,
+            ],
+          ),
+        ),
+      ],
     );
   }
 
@@ -197,18 +205,22 @@ class RedeemDialog {
                 redeemButton.onPressed?.call();
               },
             ),
-            trailing: carouselDialogHelpButton(
-              context: context,
-              carouselItems: [
-                Image.asset('images/game_screenshots/player.jpg'),
-                Image.asset('images/game_screenshots/game_settings.jpg'),
-                Image.asset('images/game_screenshots/verification_code.jpg'),
-              ],
-            ),
+            trailing: _verificationCodeCarouselDialog(context),
           ),
         ],
       ),
-      actions: [redeemButton],
+      actions: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 2.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              _openAfkArenaButton,
+              redeemButton,
+            ],
+          ),
+        ),
+      ],
     );
   }
 
@@ -313,6 +325,43 @@ class RedeemDialog {
           ),
         ],
       ),
+    );
+  }
+
+  static Widget _openAfkArenaButton = FutureBuilder<Application?>(
+    future: DeviceApps.getApp(kAfkArenaStorePackage),
+    builder: (BuildContext context, AsyncSnapshot<Application?> snapshot) {
+      if (!snapshot.hasData || snapshot.data == null) {
+        return Container();
+      }
+      // app is installed
+      return InkWell(
+        onTap: () {
+          snapshot.data!.openApp();
+        },
+        splashColor: AppearanceManager().color.main.withOpacity(0.5),
+        child: Ink(
+          height: 45,
+          width: 45,
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('images/afk_arena_icon.png'),
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+      );
+    },
+  );
+
+  static Widget _verificationCodeCarouselDialog(BuildContext context) {
+    return carouselDialogHelpButton(
+      context: context,
+      carouselItems: [
+        Image.asset('images/game_screenshots/player.jpg'),
+        Image.asset('images/game_screenshots/game_settings.jpg'),
+        Image.asset('images/game_screenshots/verification_code.jpg'),
+      ],
     );
   }
 }
