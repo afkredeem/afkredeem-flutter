@@ -18,7 +18,7 @@ Future<AlertDialog> aboutDialog(
     content: Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        HtmlRenderer.render(context, html) ??
+        HtmlRenderer.tryRender(context, html) ??
             Text(
               'It appears there\'s a connection problem',
               style: TextStyle(color: AppearanceManager().color.red),

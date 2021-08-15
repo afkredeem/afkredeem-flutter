@@ -29,7 +29,11 @@ class HtmlRenderer {
     return html;
   }
 
-  static Html? render(BuildContext context, String? html) {
+  static Html render(BuildContext context, String html) {
+    return tryRender(context, html)!;
+  }
+
+  static Html? tryRender(BuildContext context, String? html) {
     if (html == null) {
       return null;
     }

@@ -231,7 +231,7 @@ class RedeemDialog {
       uri: kFlutterHtmlUri.redeemNotSupported,
       afkRedeemApi: afkRedeemApi,
     );
-    Html? htmlWidget = HtmlRenderer.render(context, html);
+    Html? htmlWidget = HtmlRenderer.tryRender(context, html);
     if (htmlWidget == null) {
       return null;
     }
@@ -281,7 +281,7 @@ class RedeemDialog {
       uri: kFlutterHtmlUri.upgradeApp,
       afkRedeemApi: afkRedeemApi,
     );
-    Html? htmlWidget = HtmlRenderer.render(context, html);
+    Html? htmlWidget = HtmlRenderer.tryRender(context, html);
     if (htmlWidget == null) {
       return null;
     }
