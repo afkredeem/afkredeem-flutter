@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 
 const kRedeemApiVersion = 1;
@@ -71,4 +72,11 @@ mixin kFlutterHtmlUri {
   static const String redeemNotSupported =
       'flutter_html/general/redeem_not_supported.html';
   static const String upgradeApp = 'flutter_html/general/redeem_upgrade.html';
+}
+
+bool shouldReportDioError(DioError ex) {
+  // report if not timeout & not ssl handshake error (CERTIFICATE_VERIFY_FAILED)
+  // since can occur for the first time (especially for new afkredeem.com domain)
+  // in private limited networks (work, school, etc.)
+  return ex.type != DioErrorType.connectTimeout && !(ex is HandshakeException);
 }

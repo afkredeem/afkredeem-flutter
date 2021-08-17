@@ -41,7 +41,7 @@ class CodeRedeemer {
       await _redeem();
     } on DioError catch (ex) {
       userErrorHandler(UserMessage.connectionFailed);
-      if (ex.type != DioErrorType.connectTimeout) {
+      if (shouldReportDioError(ex)) {
         ErrorReporter.report(
             ex, 'Connection failed to ${kLinks.lilithRedeemHost}');
       }

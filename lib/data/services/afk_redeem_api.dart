@@ -1,6 +1,6 @@
-import 'package:afk_redeem/data/consts.dart';
 import 'package:dio/dio.dart';
 
+import 'package:afk_redeem/data/consts.dart';
 import 'package:afk_redeem/data/redemption_code.dart';
 import 'package:afk_redeem/data/user_message.dart';
 import 'package:afk_redeem/data/preferences.dart';
@@ -38,11 +38,10 @@ class AfkRedeemApi {
       return response.data;
     } on DioError catch (ex) {
       userErrorHandler(UserMessage.connectionFailed);
-      if (ex.type != DioErrorType.connectTimeout) {
+      if (shouldReportDioError(ex)) {
         ErrorReporter.report(ex, 'Connection failed to $url');
       }
     } catch (ex) {
-      print('other error');
       userErrorHandler(UserMessage.connectionFailed);
       ErrorReporter.report(ex, 'Unknown parse error on connection to $url');
     }
