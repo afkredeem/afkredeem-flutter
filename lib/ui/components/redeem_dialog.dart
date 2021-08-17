@@ -11,10 +11,11 @@ import 'package:afk_redeem/data/redemption_code.dart';
 import 'package:afk_redeem/data/services/code_redeemer.dart';
 import 'package:afk_redeem/data/user_message.dart';
 import 'package:afk_redeem/data/preferences.dart';
+import 'package:afk_redeem/data/services/afk_redeem_api.dart';
+import 'package:afk_redeem/data/user_redeem_summary.dart';
 import 'package:afk_redeem/ui/appearance_manager.dart';
 import 'package:afk_redeem/ui/components/help_button.dart';
 import 'package:afk_redeem/ui/components/html_renderer.dart';
-import 'package:afk_redeem/data/services/afk_redeem_api.dart';
 
 class RedeemDialog {
   static Future<AlertDialog?> codes(
@@ -22,9 +23,9 @@ class RedeemDialog {
       AfkRedeemApi afkRedeemApi,
       String userId,
       Set<RedemptionCode> redemptionCodes,
-      Function() redeemRunningCallback,
-      RedeemCompletedFunction redeemCompletedCallback,
-      UserErrorHandler redeemErrorCallback) async {
+      Function() redeemRunningHandler,
+      RedeemSummaryFunction redeemCompletedHandler,
+      UserErrorHandler redeemErrorHandler) async {
     if (!Preferences().isRedeemApiVersionSupported) {
       if (Preferences().isRedeemApiVersionUpgradable) {
         return _suggestVersionUpgrade(context, afkRedeemApi);
@@ -48,11 +49,11 @@ class RedeemDialog {
           uid: userId,
           verificationCode: verificationCodeController.text,
           redemptionCodes: redemptionCodes,
-          redeemCompleted: redeemCompletedCallback,
-          userErrorHandler: redeemErrorCallback,
+          redeemCompletedHandler: redeemCompletedHandler,
+          userErrorHandler: redeemErrorHandler,
         ).redeem();
         Navigator.pop(context); // pop this dialog
-        redeemRunningCallback();
+        redeemRunningHandler();
       },
       style: ElevatedButton.styleFrom(
         minimumSize: Size(40, 40),
@@ -110,9 +111,9 @@ class RedeemDialog {
       AfkRedeemApi afkRedeemApi,
       String userId,
       ClipboardData? clipboardData,
-      Function() redeemRunningCallback,
-      RedeemCompletedFunction redeemCompletedCallback,
-      UserErrorHandler redeemErrorCallback) async {
+      Function() redeemRunningHandler,
+      RedeemSummaryFunction redeemCompletedHandler,
+      UserErrorHandler redeemErrorHandler) async {
     if (!Preferences().isRedeemApiVersionSupported) {
       if (Preferences().isRedeemApiVersionUpgradable) {
         return _suggestVersionUpgrade(context, afkRedeemApi);
@@ -138,11 +139,11 @@ class RedeemDialog {
           uid: userId,
           verificationCode: verificationCodeController.text,
           redemptionCodes: {RedemptionCode(redemptionCodeController.text)},
-          redeemCompleted: redeemCompletedCallback,
-          userErrorHandler: redeemErrorCallback,
+          redeemCompletedHandler: redeemCompletedHandler,
+          userErrorHandler: redeemErrorHandler,
         ).redeem();
         Navigator.pop(context); // pop this dialog
-        redeemRunningCallback();
+        redeemRunningHandler();
       },
       child: Text(
         'Redeem!',

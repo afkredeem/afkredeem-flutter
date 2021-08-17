@@ -1,8 +1,4 @@
 import 'dart:async';
-import 'package:afk_redeem/data/user_message.dart';
-import 'package:afk_redeem/ui/components/about_dialog.dart';
-import 'package:afk_redeem/ui/components/disclosure_dialog.dart';
-import 'package:afk_redeem/ui/components/help_button.dart';
 import 'package:bubble/bubble.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -13,6 +9,12 @@ import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:afk_redeem/data/preferences.dart';
 import 'package:afk_redeem/data/redemption_code.dart';
 import 'package:afk_redeem/data/services/afk_redeem_api.dart';
+import 'package:afk_redeem/data/user_redeem_summary.dart';
+import 'package:afk_redeem/data/user_message.dart';
+import 'package:afk_redeem/ui/components/about_dialog.dart';
+import 'package:afk_redeem/ui/components/disclosure_dialog.dart';
+import 'package:afk_redeem/ui/components/help_button.dart';
+import 'package:afk_redeem/ui/components/loader_overlay.dart';
 import 'package:afk_redeem/ui/image_manager.dart';
 import 'package:afk_redeem/ui/appearance_manager.dart';
 import 'package:afk_redeem/ui/components/redemption_code_card.dart';
@@ -45,7 +47,6 @@ class _MainScreenState extends State<MainScreen>
   GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey();
   List<RedemptionCode> _redemptionCodes = Preferences().redemptionCodes;
   Set<RedemptionCode> _selectedRedemptionCodes = {};
-  bool _isRedeemerRunning = false;
   late AnimationController _brutusAnimationController = AnimationController(
     duration: Duration(milliseconds: 350),
     vsync: this,
@@ -164,39 +165,28 @@ class _MainScreenState extends State<MainScreen>
   }
 
   void _redeemRunning() {
-    setState(() {
-      _isRedeemerRunning = true;
-    });
+    LoaderOverlay.show(context);
   }
 
-  void _redeemCompleted(
-    String username,
-    List<RedemptionCode> redeemedCodes,
-    List<RedemptionCode> usedCodes,
-    List<RedemptionCode> notFoundCodes,
-    List<RedemptionCode> expiredCodes,
-  ) {
+  void _redeemCompleted(List<UserRedeemSummary> usersRedeemSummary) {
+    LoaderOverlay.hide();
     setState(() {
-      _isRedeemerRunning = false;
       _selectedRedemptionCodes.clear();
-      Preferences().updateRedeemedCodes(
-          redeemedCodes + usedCodes + notFoundCodes + expiredCodes);
+      Preferences().updateRedeemedCodes(usersRedeemSummary[0].allCodes);
     });
     showDialog<String>(
-        context: context,
-        builder: (_) => redemptionSummaryDialog(
-            context,
-            username,
-            _isRedeemingSelectedCodes,
-            redeemedCodes,
-            usedCodes,
-            notFoundCodes,
-            expiredCodes));
+      context: context,
+      builder: (_) => redemptionSummaryDialog(
+        context,
+        _isRedeemingSelectedCodes,
+        usersRedeemSummary,
+      ),
+    );
   }
 
   void _redeemError(UserMessage errorMessage) async {
+    LoaderOverlay.hide();
     setState(() {
-      _isRedeemerRunning = false;
       _selectedRedemptionCodes.clear();
     });
     await showDialog<String>(
@@ -480,39 +470,33 @@ class _MainScreenState extends State<MainScreen>
                   title: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      _isRedeemerRunning
-                          ? CircularProgressIndicator(
-                              color: AppearanceManager().color.appBarText,
-                            )
-                          : _selectedRedemptionCodes.isEmpty
-                              ? AnimatedTextKit(
-                                  // use key on text color to support re-build on color change
-                                  key: ValueKey(
-                                      AppearanceManager().color.appBarText),
-                                  animatedTexts: [
-                                    TypewriterAnimatedText(
-                                      "AFK Redeem",
-                                      textStyle: TextStyle(
-                                        color: AppearanceManager()
-                                            .color
-                                            .appBarText,
-                                      ),
-                                      speed: Duration(milliseconds: 150),
-                                    ),
-                                  ],
-                                  isRepeatingAnimation: false,
-                                )
-                              : IconButton(
-                                  padding: EdgeInsets.zero,
-                                  constraints: BoxConstraints(),
-                                  onPressed: () {
-                                    _redeemSelectedCodes(context);
-                                  },
-                                  iconSize: 32.0,
-                                  icon: Icon(
-                                    CupertinoIcons.gift,
+                      _selectedRedemptionCodes.isEmpty
+                          ? AnimatedTextKit(
+                              // use key on text color to support re-build on color change
+                              key: ValueKey(
+                                  AppearanceManager().color.appBarText),
+                              animatedTexts: [
+                                TypewriterAnimatedText(
+                                  "AFK Redeem",
+                                  textStyle: TextStyle(
+                                    color: AppearanceManager().color.appBarText,
                                   ),
+                                  speed: Duration(milliseconds: 150),
                                 ),
+                              ],
+                              isRepeatingAnimation: false,
+                            )
+                          : IconButton(
+                              padding: EdgeInsets.zero,
+                              constraints: BoxConstraints(),
+                              onPressed: () {
+                                _redeemSelectedCodes(context);
+                              },
+                              iconSize: 32.0,
+                              icon: Icon(
+                                CupertinoIcons.gift,
+                              ),
+                            ),
                       Padding(
                         padding: const EdgeInsets.only(right: 20.0),
                         child: GestureDetector(

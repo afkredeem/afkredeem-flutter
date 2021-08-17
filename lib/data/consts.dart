@@ -17,6 +17,8 @@ const kDefaultAppInStoreApiVersionSupport = 1000000;
 
 const String kAfkArenaStorePackage = 'com.lilithgame.hgame.gp';
 
+const int kConcurrentConsumeRequestsSoftLimit = 10;
+
 // mixin wins over class cause it prevents the compiler from complaining about naming conventions
 mixin kLinks {
   // static const bool _emulateLilithRedeem = true;
