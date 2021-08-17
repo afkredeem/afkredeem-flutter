@@ -70,7 +70,7 @@ class _MainScreenState extends State<MainScreen>
     setState(() {
       _userIdEmpty = _userIdController.text == '';
       for (RedemptionCode redemptionCode in Preferences().redemptionCodes) {
-        if (!redemptionCode.wasRedeemed) {
+        if (redemptionCode.shouldRedeem) {
           _selectedRedemptionCodes.add(redemptionCode);
         }
       }
@@ -150,7 +150,7 @@ class _MainScreenState extends State<MainScreen>
       _redemptionCodes = redemptionCodes;
       // select new (non-redeemed) codes
       for (RedemptionCode code in Preferences().redemptionCodes) {
-        if (!code.wasRedeemed) {
+        if (code.shouldRedeem) {
           _selectedRedemptionCodes.add(code);
         }
       }

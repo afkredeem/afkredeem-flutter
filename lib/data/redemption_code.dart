@@ -39,6 +39,10 @@ class RedemptionCode implements Comparable {
     return DateTime.now().isBefore(expiresAt!);
   }
 
+  bool get shouldRedeem {
+    return !wasRedeemed && isActive;
+  }
+
   @override
   int compareTo(_other) {
     RedemptionCode other = _other as RedemptionCode;

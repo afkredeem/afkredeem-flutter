@@ -76,14 +76,15 @@ class RedemptionCodeCard extends StatelessWidget {
                                       redemptionCode.code,
                                       style: TextStyle(
                                           fontSize: 18.0,
-                                          fontWeight: redemptionCode.wasRedeemed
-                                              ? FontWeight.normal
-                                              : FontWeight.bold,
-                                          color: redemptionCode.wasRedeemed
-                                              ? AppearanceManager().color.text
-                                              : AppearanceManager()
+                                          fontWeight:
+                                              redemptionCode.shouldRedeem
+                                                  ? FontWeight.bold
+                                                  : FontWeight.normal,
+                                          color: redemptionCode.shouldRedeem
+                                              ? AppearanceManager()
                                                   .color
-                                                  .boldText),
+                                                  .boldText
+                                              : AppearanceManager().color.text),
                                       overflow: TextOverflow.ellipsis,
                                     ),
                                   ),
@@ -100,16 +101,17 @@ class RedemptionCodeCard extends StatelessWidget {
                                           : '',
                                       style: TextStyle(
                                           fontSize: 12.0,
-                                          fontWeight: redemptionCode.wasRedeemed
-                                              ? FontWeight.normal
-                                              : FontWeight.bold,
-                                          color: redemptionCode.wasRedeemed
+                                          fontWeight:
+                                              redemptionCode.shouldRedeem
+                                                  ? FontWeight.bold
+                                                  : FontWeight.normal,
+                                          color: redemptionCode.shouldRedeem
                                               ? AppearanceManager()
                                                   .color
-                                                  .dateText
+                                                  .boldText
                                               : AppearanceManager()
                                                   .color
-                                                  .boldText),
+                                                  .dateText),
                                     ),
                                   ),
                                 ),
@@ -166,13 +168,13 @@ class RedemptionCodeCard extends StatelessWidget {
                                         child: Text(
                                           gift.value,
                                           style: TextStyle(
-                                            color: redemptionCode.wasRedeemed
+                                            color: redemptionCode.shouldRedeem
                                                 ? AppearanceManager()
                                                     .color
-                                                    .giftText
+                                                    .boldText
                                                 : AppearanceManager()
                                                     .color
-                                                    .boldText,
+                                                    .giftText,
                                             fontWeight: FontWeight.bold,
                                           ),
                                         ),
