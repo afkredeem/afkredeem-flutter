@@ -109,7 +109,6 @@ class Preferences {
   }
 
   bool get isRedeemApiVersionSupported {
-    print('$redeemApiVersion <= $kRedeemApiVersion');
     return redeemApiVersion <= kRedeemApiVersion;
   }
 
@@ -119,7 +118,7 @@ class Preferences {
 
   void updateRedeemedCodes(List<RedemptionCode> redeemed) {
     for (RedemptionCode redeemedCode in redeemed) {
-      redeemedCode.wasRedeemed = true;
+      redemptionCodesMap[redeemedCode.code]?.wasRedeemed = true;
     }
     _prefs.setString('redemptionCodes', _codesToJsonString(redemptionCodes));
   }
