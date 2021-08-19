@@ -9,46 +9,70 @@ import 'package:afk_redeem/data/json_reader.dart';
 import 'package:afk_redeem/data/error_reporter.dart';
 import 'package:afk_redeem/data/user_redeem_summary.dart';
 
-class CodeRedeemer {
-  String uid;
-  String verificationCode;
-  Set<RedemptionCode> redemptionCodes;
+enum AccountRedeemStrategy {
+  mainAccount,
+  allAccounts,
+  select,
+}
+
+class RedeemHandlers {
+  Function() redeemRunningHandler;
+  Function(List<AccountInfo> accounts) accountSelectionHandler;
   RedeemSummaryFunction redeemCompletedHandler;
   UserErrorHandler userErrorHandler;
+
+  RedeemHandlers({
+    required this.redeemRunningHandler,
+    required this.accountSelectionHandler,
+    required this.redeemCompletedHandler,
+    required this.userErrorHandler,
+  });
+}
+
+class CodeRedeemer {
+  String uid;
+  AccountRedeemStrategy accountRedeemStrategy;
+  String verificationCode;
+  Set<RedemptionCode> redemptionCodes;
+  RedeemHandlers handlers;
+  late JsonReader accountsJsonReader;
   Dio _dio = Dio();
   CookieJar _cookieJar = CookieJar();
 
-  CodeRedeemer(
-      {required this.uid,
-      required this.verificationCode,
-      required this.redemptionCodes,
-      required this.redeemCompletedHandler,
-      required this.userErrorHandler}) {
+  CodeRedeemer({
+    required this.uid,
+    required this.accountRedeemStrategy,
+    required this.verificationCode,
+    required this.redemptionCodes,
+    required this.handlers,
+  }) {
     _dio.interceptors.add(CookieManager(_cookieJar));
     _dio.options.connectTimeout = kConnectTimeoutMilli;
     _dio.options.receiveTimeout = kReceiveTimeoutMilli;
   }
 
   Future<void> redeem() async {
+    handlers.redeemRunningHandler();
     try {
       await _redeem();
     } on DioError catch (ex) {
-      userErrorHandler(UserMessage.connectionFailed);
+      handlers.userErrorHandler(UserMessage.connectionFailed);
       if (shouldReportDioError(ex)) {
         ErrorReporter.report(
             ex, 'Connection failed to ${kLinks.lilithRedeemHost}');
       }
     } on JsonReaderException catch (ex) {
-      userErrorHandler(UserMessage.parseError);
+      handlers.userErrorHandler(UserMessage.parseError);
       ex.report();
     } catch (ex) {
-      userErrorHandler(UserMessage.parseError);
+      handlers.userErrorHandler(UserMessage.parseError);
       ErrorReporter.report(ex,
           'Unknown parse error on connection to ${kLinks.lilithRedeemHost}');
     }
   }
 
   Future<void> _redeem() async {
+    // verify code
     String postData = '''
     {
         "game": "afk",
@@ -66,17 +90,17 @@ class CodeRedeemer {
 
     String info = jsonReader.read('info');
     if (info == 'ok') {
-      await _redeemForUsers();
+      await _requestAccountsAndRedeem();
     } else if (info == 'err_wrong_code') {
-      userErrorHandler(UserMessage.verificationFailed);
+      handlers.userErrorHandler(UserMessage.verificationFailed);
     } else {
-      userErrorHandler(UserMessage.parseError);
+      handlers.userErrorHandler(UserMessage.parseError);
       throw JsonReaderException(
           'Unknown ${kUris.verifyCodeUri} \'info\' value \'$info\'');
     }
   }
 
-  Future<void> _redeemForUsers() async {
+  Future<void> _requestAccountsAndRedeem() async {
     String postData = '''
     {
         "game": "afk",
@@ -84,48 +108,75 @@ class CodeRedeemer {
     }
     ''';
     Response response = await _sendRequest(kUris.usersUri, postData: postData);
-    JsonReader jsonReader = JsonReader(
+    accountsJsonReader = JsonReader(
       context:
           'Redeemer reading response from ${kLinks.lilithRedeemHost}${kUris.usersUri}',
       json: response.data as Map<String, dynamic>,
     );
 
-    List<Future<UserRedeemSummary>> userRedeemSummaries = [];
+    _redeemForAccount();
+  }
+
+  bool _shouldRedeemForUser(AccountInfo account, AccountInfo? selectedAccount) {
+    return accountRedeemStrategy == AccountRedeemStrategy.allAccounts ||
+        (accountRedeemStrategy == AccountRedeemStrategy.mainAccount &&
+            account.isMain) ||
+        (accountRedeemStrategy == AccountRedeemStrategy.select &&
+            selectedAccount != null &&
+            selectedAccount.uid == account.uid);
+  }
+
+  Future<void> redeemForAccount(AccountInfo selectedAccount) async {
+    handlers.redeemRunningHandler();
+    _redeemForAccount(selectedAccount: selectedAccount);
+  }
+
+  Future<void> _redeemForAccount({AccountInfo? selectedAccount}) async {
+    List<AccountInfo> accountsForSelection = [];
+    List<Future<AccountRedeemSummary>> accountRedeemSummaries = [];
     int concurrentConsumeOperations = 0;
-    if ((jsonReader.read('info') ?? 'not-ok') == 'ok') {
+    if ((accountsJsonReader.read('info') ?? 'not-ok') == 'ok') {
       List<dynamic> users =
-          jsonReader.readFrom(jsonReader.read('data'), 'users');
+          accountsJsonReader.readFrom(accountsJsonReader.read('data'), 'users');
       for (Map<String, dynamic> user in users) {
-        if (concurrentConsumeOperations >=
-            kConcurrentConsumeRequestsSoftLimit) {
-          await Future.wait(userRedeemSummaries);
-          concurrentConsumeOperations = 0;
-        }
-        concurrentConsumeOperations += redemptionCodes.length;
-        userRedeemSummaries.add(
-          _consumeUserRedemptionCodes(
-            jsonReader.readFrom(user, 'uid'),
-            jsonReader.readFrom(user, 'name'),
-            jsonReader.readFrom(user, 'svr_id'),
-          ),
+        AccountInfo account = AccountInfo(
+          accountsJsonReader.readFrom(user, 'uid'),
+          accountsJsonReader.readFrom(user, 'name'),
+          accountsJsonReader.readFrom(user, 'svr_id'),
+          accountsJsonReader.readFrom(user, 'is_main'),
         );
+        if (accountRedeemStrategy == AccountRedeemStrategy.select &&
+            selectedAccount == null) {
+          accountsForSelection.add(account);
+        } else if (_shouldRedeemForUser(account, selectedAccount)) {
+          if (concurrentConsumeOperations >=
+              kConcurrentConsumeRequestsSoftLimit) {
+            await Future.wait(accountRedeemSummaries);
+            concurrentConsumeOperations = 0;
+          }
+          concurrentConsumeOperations += redemptionCodes.length;
+          accountRedeemSummaries.add(
+            _consumeForAccount(account),
+          );
+        }
       }
     }
-
-    if (userRedeemSummaries.isEmpty) {
-      userErrorHandler(UserMessage.parseError);
+    if (accountsForSelection.isNotEmpty) {
+      handlers.accountSelectionHandler(accountsForSelection);
+      return;
+    }
+    if (accountRedeemSummaries.isEmpty) {
+      handlers.userErrorHandler(UserMessage.parseError);
       ErrorReporter.report(Exception('Redeem Failed'),
-          'empty userRedeemSummaries list for ${kUris.usersUri} response: ${response.data}');
+          'empty accountRedeemSummaries list for ${kUris.usersUri} response: ${accountsJsonReader.json}');
       return;
     }
     concurrentConsumeOperations = 0;
-    redeemCompletedHandler(await Future.wait(userRedeemSummaries));
+    handlers.redeemCompletedHandler(await Future.wait(accountRedeemSummaries));
   }
 
-  Future<UserRedeemSummary> _consumeUserRedemptionCodes(
-      int uid, String username, int server) async {
-    UserRedeemSummary userRedeemSummary =
-        UserRedeemSummary(uid, username, server);
+  Future<AccountRedeemSummary> _consumeForAccount(AccountInfo account) async {
+    AccountRedeemSummary accountRedeemSummary = AccountRedeemSummary(account);
 
     await Future.forEach(redemptionCodes,
         (RedemptionCode redemptionCode) async {
@@ -138,7 +189,7 @@ class CodeRedeemer {
           "cdkey": "${redemptionCode.code}",
           "game": "afk",
           "type": "cdkey_web",
-          "uid": $uid
+          "uid": ${account.uid}
       }
       ''';
       Response response = await _sendRequest(kUris.consumeUri,
@@ -151,16 +202,16 @@ class CodeRedeemer {
       String info = jsonReader.read('info');
       switch (info) {
         case 'ok':
-          userRedeemSummary.redeemedCodes.add(redemptionCode);
+          accountRedeemSummary.redeemedCodes.add(redemptionCode);
           break;
         case 'err_cdkey_batch_error':
-          userRedeemSummary.usedCodes.add(redemptionCode);
+          accountRedeemSummary.usedCodes.add(redemptionCode);
           break;
         case 'err_cdkey_record_not_found':
-          userRedeemSummary.notFoundCodes.add(redemptionCode);
+          accountRedeemSummary.notFoundCodes.add(redemptionCode);
           break;
         case 'err_cdkey_expired':
-          userRedeemSummary.expiredCodes.add(redemptionCode);
+          accountRedeemSummary.expiredCodes.add(redemptionCode);
           break;
         default:
           throw JsonReaderException(
@@ -168,7 +219,7 @@ class CodeRedeemer {
       }
     });
 
-    return userRedeemSummary;
+    return accountRedeemSummary;
   }
 
   Future<Response> _sendRequest(String uri,

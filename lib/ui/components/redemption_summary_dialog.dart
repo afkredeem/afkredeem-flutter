@@ -11,12 +11,12 @@ import 'package:afk_redeem/ui/components/carousel_dialog.dart';
 AlertDialog redemptionSummaryDialog(
   BuildContext context,
   bool shouldReportNotFoundExpired,
-  List<UserRedeemSummary> usersRedeemSummary,
+  List<AccountRedeemSummary> accountRedeemSummaries,
 ) {
   bool hasAlreadyReported = false;
   int maxCodesDisplayLines =
-      usersRedeemSummary.map((s) => s.codesDisplayLines).reduce(max);
-  int baseHeight = usersRedeemSummary.length > 1 ? 140 : 100;
+      accountRedeemSummaries.map((s) => s.codesDisplayLines).reduce(max);
+  int baseHeight = accountRedeemSummaries.length > 1 ? 140 : 100;
   double height = (baseHeight + (15 * maxCodesDisplayLines)).toDouble();
   double width = 300;
   return AlertDialog(
@@ -29,9 +29,9 @@ AlertDialog redemptionSummaryDialog(
       padding: EdgeInsets.zero,
       margin: EdgeInsets.zero,
       child: CarouselViewer(
-        usersRedeemSummary
+        accountRedeemSummaries
             .map(
-              (UserRedeemSummary userRedeemSummary) => Column(
+              (AccountRedeemSummary accountRedeemSummary) => Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Center(
@@ -39,17 +39,17 @@ AlertDialog redemptionSummaryDialog(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          userRedeemSummary.username,
+                          accountRedeemSummary.account.username,
                           style: TextStyle(
                             color: AppearanceManager().color.main,
                             fontSize: 17.0,
                           ),
                         ),
-                        if (usersRedeemSummary.length > 1)
+                        if (accountRedeemSummaries.length > 1)
                           Text(
-                            'S${userRedeemSummary.server}',
+                            'S${accountRedeemSummary.account.server}',
                             style: TextStyle(
-                              color: AppearanceManager().color.mainBright,
+                              color: AppearanceManager().color.text,
                               fontSize: 14.0,
                             ),
                           ),
@@ -60,9 +60,9 @@ AlertDialog redemptionSummaryDialog(
                     padding: const EdgeInsets.symmetric(horizontal: 10.0),
                     child: Column(
                       children: [
-                        codesList(context, userRedeemSummary.redeemedCodes,
+                        codesList(context, accountRedeemSummary.redeemedCodes,
                             'Redeemed', AppearanceManager().color.green),
-                        codesList(context, userRedeemSummary.usedCodes,
+                        codesList(context, accountRedeemSummary.usedCodes,
                             'already used', AppearanceManager().color.yellow),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -71,19 +71,21 @@ AlertDialog redemptionSummaryDialog(
                               children: [
                                 codesList(
                                     context,
-                                    userRedeemSummary.expiredCodes,
+                                    accountRedeemSummary.expiredCodes,
                                     'expired',
                                     AppearanceManager().color.red),
                                 codesList(
                                     context,
-                                    userRedeemSummary.notFoundCodes,
+                                    accountRedeemSummary.notFoundCodes,
                                     'not found',
                                     AppearanceManager().color.red),
                               ],
                             ),
                             if (shouldReportNotFoundExpired &&
-                                (userRedeemSummary.notFoundCodes.isNotEmpty ||
-                                    userRedeemSummary.expiredCodes.isNotEmpty))
+                                (accountRedeemSummary
+                                        .notFoundCodes.isNotEmpty ||
+                                    accountRedeemSummary
+                                        .expiredCodes.isNotEmpty))
                               ElevatedButton.icon(
                                 onPressed: () async {
                                   ScaffoldMessenger.of(context).showSnackBar(
@@ -94,15 +96,15 @@ AlertDialog redemptionSummaryDialog(
                                     return;
                                   }
                                   String error = '';
-                                  if (userRedeemSummary
+                                  if (accountRedeemSummary
                                       .notFoundCodes.isNotEmpty) {
                                     error +=
-                                        'not found codes: ${userRedeemSummary.notFoundCodes} ';
+                                        'not found codes: ${accountRedeemSummary.notFoundCodes} ';
                                   }
-                                  if (userRedeemSummary
+                                  if (accountRedeemSummary
                                       .expiredCodes.isNotEmpty) {
                                     error +=
-                                        'expired codes: ${userRedeemSummary.expiredCodes}';
+                                        'expired codes: ${accountRedeemSummary.expiredCodes}';
                                   }
                                   ErrorReporter.report(
                                       Exception('Bad redemption codes'), error);
@@ -122,7 +124,7 @@ AlertDialog redemptionSummaryDialog(
                   Center(
                     child: Column(
                       children: [
-                        if (userRedeemSummary.redeemedCodes.isNotEmpty)
+                        if (accountRedeemSummary.redeemedCodes.isNotEmpty)
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -145,13 +147,6 @@ AlertDialog redemptionSummaryDialog(
                               ),
                             ],
                           ),
-                        // Text(
-                        //   userRedeemSummary.redeemedCodes.isNotEmpty
-                        //       ? '\n🎁       🎁       🎁'
-                        //       : '',
-                        //   style:
-                        //       TextStyle(color: AppearanceManager().color.main),
-                        // ),
                         SizedBox(
                           height: 15.0,
                         )
