@@ -54,6 +54,7 @@ class AppearanceManager {
           background: Color(0xFF140D1F),
           appBackgroundBlend: Color(0xFF4B4B4B),
           dialogBackground: Color(0xFF27213D),
+          dialogBackgroundOverlay: Color(0xFF372F57),
           dialogText: Color(0xFFD888EE),
           inactiveSwitch: Color(0xFFFFE89A),
           red: Colors.red,
@@ -80,6 +81,7 @@ class AppearanceManager {
           background: Color(0xFFFFFEFB),
           appBackgroundBlend: Color(0xFFFFFFFF),
           dialogBackground: Color(0xFFFFFCF7),
+          dialogBackgroundOverlay: Color(0xFFFFEFD6),
           dialogText: Color(0xFF5E5E5E),
           inactiveSwitch: Color(0xFFFFE89A),
           red: Color(0xFFE51C0B),
@@ -235,6 +237,7 @@ class ColorPalette {
   final Color background;
   final Color appBackgroundBlend;
   final Color dialogBackground;
+  final Color dialogBackgroundOverlay;
   final Color dialogText;
   final Color inactiveSwitch;
   final Color red;
@@ -259,6 +262,7 @@ class ColorPalette {
     "background": background,
     "appBackgroundBlend": appBackgroundBlend,
     "dialogBackground": dialogBackground,
+    "dialogBackgroundOverlay": dialogBackgroundOverlay,
     "dialogText": dialogText,
     "inactiveSwitch": inactiveSwitch,
     "red": red,
@@ -284,6 +288,7 @@ class ColorPalette {
       required this.background,
       required this.appBackgroundBlend,
       required this.dialogBackground,
+      required this.dialogBackgroundOverlay,
       required this.dialogText,
       required this.inactiveSwitch,
       required this.red,

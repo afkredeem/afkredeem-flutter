@@ -35,25 +35,38 @@ AlertDialog redemptionSummaryDialog(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          accountRedeemSummary.account.username,
-                          style: TextStyle(
-                            color: AppearanceManager().color.main,
-                            fontSize: 17.0,
-                          ),
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                        minWidth: width * 2 / 3,
+                      ),
+                      child: Container(
+                        padding: EdgeInsets.all(10.0),
+                        decoration: BoxDecoration(
+                          color:
+                              AppearanceManager().color.dialogBackgroundOverlay,
+                          borderRadius: BorderRadius.circular(10),
                         ),
-                        if (accountRedeemSummaries.length > 1)
-                          Text(
-                            'S${accountRedeemSummary.account.server}',
-                            style: TextStyle(
-                              color: AppearanceManager().color.text,
-                              fontSize: 14.0,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              accountRedeemSummary.account.username,
+                              style: TextStyle(
+                                color: AppearanceManager().color.main,
+                                fontSize: 17.0,
+                              ),
                             ),
-                          ),
-                      ],
+                            if (accountRedeemSummaries.length > 1)
+                              Text(
+                                'S${accountRedeemSummary.account.server}',
+                                style: TextStyle(
+                                  color: AppearanceManager().color.text,
+                                  fontSize: 14.0,
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
                     ),
                   ),
                   Padding(
