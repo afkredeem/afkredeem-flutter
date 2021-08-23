@@ -14,6 +14,17 @@
   ],
   "codes": [
     {
+      "code": "Star241",
+      "addedAt": "2021-08-23",
+      "expiresAt": "2021-12-29",
+      "gifts": {
+        "diamonds": "500",
+        "hours/experience_8": "5",
+        "hours/gold_8": "5",
+        "hours/dust_8": "5"
+      }
+    },
+    {
       "code": "dqy4aq3pyw",
       "addedAt": "2021-07-29",
       "expiresAt": "2021-08-29",
