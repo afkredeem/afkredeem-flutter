@@ -12,8 +12,8 @@ const kMaxPasteManualRedemptionCodeLength = 15;
 
 const kDefaultIsHypogean = true;
 const kDefaultWasDisclosureApproved = false;
-const kDefaultRedeemApiVersion = 1000000;
-const kDefaultAppInStoreApiVersionSupport = 1000000;
+const kDefaultRedeemApiVersion = 1;
+const kDefaultAppInStoreApiVersionSupport = 1;
 
 const String kAfkArenaStorePackage = 'com.lilithgame.hgame.gp';
 
