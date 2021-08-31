@@ -17,6 +17,7 @@ class Preferences {
   bool _isHypogean;
   String _userID;
   bool _wasDisclosureApproved;
+  bool _wasFirstConnectionSuccessful;
   int _redeemApiVersion;
   int _appInStoreApiVersionSupport;
   List<RedemptionCode> redemptionCodes;
@@ -25,6 +26,7 @@ class Preferences {
   bool get isHypogean => _isHypogean;
   String get userID => _userID;
   bool get wasDisclosureApproved => _wasDisclosureApproved;
+  bool get wasFirstConnectionSuccessful => _wasFirstConnectionSuccessful;
   int get redeemApiVersion => _redeemApiVersion;
   int get appInStoreApiVersionSupport => _appInStoreApiVersionSupport;
 
@@ -41,6 +43,11 @@ class Preferences {
   set wasDisclosureApproved(bool value) {
     _wasDisclosureApproved = value;
     _prefs.setBool('wasDisclosureApproved', value);
+  }
+
+  set wasFirstConnectionSuccessful(bool value) {
+    _wasFirstConnectionSuccessful = value;
+    _prefs.setBool('wasFirstConnectionSuccessful', value);
   }
 
   set redeemApiVersion(int value) {
@@ -71,10 +78,12 @@ class Preferences {
   }
 
   Preferences._create(this._prefs)
-      : _isHypogean = _prefs.getBool('isHypogean') ?? kDefaultIsHypogean,
+      : _isHypogean = _prefs.getBool('isHypogean') ?? true,
         _userID = _prefs.getString('userID') ?? '',
-        _wasDisclosureApproved = _prefs.getBool('wasDisclosureApproved') ??
-            kDefaultWasDisclosureApproved,
+        _wasDisclosureApproved =
+            _prefs.getBool('wasDisclosureApproved') ?? false,
+        _wasFirstConnectionSuccessful =
+            _prefs.getBool('wasFirstConnectionSuccessful') ?? false,
         _redeemApiVersion =
             _prefs.getInt('redeemApiVersion') ?? kDefaultRedeemApiVersion,
         _appInStoreApiVersionSupport =
@@ -87,6 +96,11 @@ class Preferences {
     redemptionCodesMap = {for (var rc in redemptionCodes) rc.code: rc};
     // sort by isActive & date
     redemptionCodes.sort();
+
+    // set successful first connection for existing users (already have codes)
+    if (redemptionCodes.isNotEmpty) {
+      wasFirstConnectionSuccessful = true;
+    }
   }
 
   void updateConfigData({
@@ -127,6 +141,7 @@ class Preferences {
     required List<dynamic> newCodesJson,
     required UserErrorHandler? userErrorHandler,
   }) {
+    wasFirstConnectionSuccessful = true;
     List<RedemptionCode> newCodes =
         _codesFromJson(newCodesJson, userErrorHandler: userErrorHandler);
     if (redemptionCodes.isEmpty) {

@@ -37,7 +37,7 @@ class _MainScreenState extends State<MainScreen>
   late AfkRedeemApi _afkRedeemApi = AfkRedeemApi(
     redemptionCodesHandler: updateRedemptionCodes,
     appMessageHandler: showBrutusMessage,
-    userErrorHandler: showSnackBarError,
+    userErrorHandler: showUserError,
   );
   late RedeemHandlers _redeemHandlers = RedeemHandlers(
     redeemRunningHandler: _redeemRunning,
@@ -165,10 +165,18 @@ class _MainScreenState extends State<MainScreen>
     });
   }
 
-  void showSnackBarError(UserMessage errorMessage) {
-    ScaffoldMessenger.of(context)
-        .showSnackBar(AppearanceManager().errorSnackBar(errorMessage));
+  void showUserError(UserMessage errorMessage) {
     _refreshController.refreshCompleted();
+    if (errorMessage == UserMessage.connectionFailed &&
+        !Preferences().wasFirstConnectionSuccessful) {
+      showDialog<String>(
+        context: context,
+        builder: (_) => firstConnectionErrorDialog(context),
+      );
+    } else {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(AppearanceManager().errorSnackBar(errorMessage));
+    }
   }
 
   void _redeemRunning() {

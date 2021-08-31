@@ -10,8 +10,6 @@ const kReceiveTimeoutMilli = 3000;
 const kMinPasteManualRedemptionCodeLength = 5;
 const kMaxPasteManualRedemptionCodeLength = 15;
 
-const kDefaultIsHypogean = true;
-const kDefaultWasDisclosureApproved = false;
 const kDefaultRedeemApiVersion = 1;
 const kDefaultAppInStoreApiVersionSupport = 1;
 
