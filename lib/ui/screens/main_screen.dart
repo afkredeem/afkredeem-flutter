@@ -639,8 +639,9 @@ class _MainScreenState extends State<MainScreen>
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           for (var redemptionCode in _redemptionCodes)
-                            RedemptionCodeCard(
-                                redemptionCode, redemptionCodeSelected)
+                            if (!redemptionCode.isHidden)
+                              RedemptionCodeCard(
+                                  redemptionCode, redemptionCodeSelected)
                         ]),
                   ],
                 ),

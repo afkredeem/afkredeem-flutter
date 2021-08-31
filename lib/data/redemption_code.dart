@@ -6,17 +6,20 @@ class RedemptionCode implements Comparable {
   String code; // set from internal / external source
   DateTime? addedAt; // set from internal / external source
   DateTime? expiresAt; // set from internal / external source
+  bool isHidden; // set from internal / external source
   Map<String, String> gifts; // set from internal / external source
   bool wasRedeemed; // set from internal source only
 
   RedemptionCode(this.code)
-      : gifts = {},
+      : isHidden = false,
+        gifts = {},
         wasRedeemed = false;
 
   RedemptionCode.fromJson(JsonReader jsonReader)
       : code = jsonReader.read('code'),
         addedAt = DateTime.tryParse(jsonReader.read('addedAt')),
         expiresAt = DateTime.tryParse(jsonReader.read('expiresAt')),
+        isHidden = jsonReader.tryRead('isHidden') ?? false,
         gifts = (jsonReader.read('gifts') as Map<String, dynamic>)
             .map((key, value) => MapEntry(key, value.toString())),
         wasRedeemed = jsonReader.tryRead('wasRedeemed') ?? false;
@@ -28,6 +31,7 @@ class RedemptionCode implements Comparable {
         'expiresAt': expiresAt != null
             ? DateFormat('yyyy-MM-dd').format(expiresAt!)
             : '',
+        'isHidden': isHidden,
         'gifts': gifts,
         'wasRedeemed': wasRedeemed,
       };
@@ -73,6 +77,7 @@ class RedemptionCode implements Comparable {
 
     addedAt = externalRedemptionCode.addedAt;
     expiresAt = externalRedemptionCode.expiresAt;
+    isHidden = externalRedemptionCode.isHidden;
     gifts = externalRedemptionCode.gifts;
     // not copying wasRedeemed as it is internal only
   }
