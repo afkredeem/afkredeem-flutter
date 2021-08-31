@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/cupertino.dart';
@@ -418,15 +417,7 @@ class RedeemDialog {
             child: ElevatedButton(
               onPressed: () {
                 Navigator.pop(context); // pop this dialog
-                String? upgradeLink =
-                    HtmlRenderer.lastRenderButtonLinks[Platform.isAndroid
-                        ? 'android-upgrade'
-                        : Platform.isIOS
-                            ? 'ios-upgrade'
-                            : null];
-                if (upgradeLink != null) {
-                  launch(upgradeLink);
-                }
+                launch(kLinks.storeLink);
               },
               child: Row(
                 mainAxisSize: MainAxisSize.min,

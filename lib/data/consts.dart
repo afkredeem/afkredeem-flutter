@@ -10,6 +10,7 @@ const kReceiveTimeoutMilli = 3000;
 const kMinPasteManualRedemptionCodeLength = 5;
 const kMaxPasteManualRedemptionCodeLength = 15;
 
+const kDefaultAppInStoreVersion = 1;
 const kDefaultRedeemApiVersion = 1;
 const kDefaultAppInStoreApiVersionSupport = 1;
 
@@ -36,6 +37,11 @@ mixin kLinks {
   static const String afkRedeem = 'https://afkredeem.com/';
   static const String githubProject =
       'https://github.com/afkredeem/afkredeem-flutter';
+
+  static const _androidStoreLink =
+      'https://play.google.com/store/apps/details?id=com.afkredeem';
+  static const _iosStoreLink = 'https://www.apple.com/app-store/';
+  static final storeLink = Platform.isIOS ? _iosStoreLink : _androidStoreLink;
 
   static final String lilithRedeemHost = kReleaseMode || !_emulateLilithRedeem
       ? _lilithRedeem

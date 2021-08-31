@@ -16,6 +16,7 @@ class AfkRedeemApi {
     required this.redemptionCodesHandler,
     required this.appMessageHandler,
     required this.userErrorHandler,
+    required this.notifyNewerVersionHandler,
   }) {
     _dio.options.connectTimeout = kConnectTimeoutMilli;
     _dio.options.receiveTimeout = kReceiveTimeoutMilli;
@@ -25,6 +26,7 @@ class AfkRedeemApi {
   RedemptionCodesHandler redemptionCodesHandler;
   AppMessageHandler appMessageHandler;
   UserErrorHandler userErrorHandler;
+  Function() notifyNewerVersionHandler;
 
   Future<String?> getPage(String uri) async {
     String url = kLinks.afkRedeemApiHost + uri;
@@ -130,6 +132,9 @@ class AfkRedeemApi {
       if (messageShown) {
         appMessageToShow.setWasShown();
       }
+    } else if (Preferences().isAppUpgradable) {
+      // no messages - but app is upgradable
+      notifyNewerVersionHandler();
     }
   }
 }

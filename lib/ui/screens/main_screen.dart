@@ -1,11 +1,14 @@
 import 'dart:async';
 import 'package:bubble/bubble.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:url_launcher/url_launcher.dart';
 
+import 'package:afk_redeem/data/consts.dart';
 import 'package:afk_redeem/data/preferences.dart';
 import 'package:afk_redeem/data/redemption_code.dart';
 import 'package:afk_redeem/data/services/afk_redeem_api.dart';
@@ -38,6 +41,7 @@ class _MainScreenState extends State<MainScreen>
     redemptionCodesHandler: updateRedemptionCodes,
     appMessageHandler: showBrutusMessage,
     userErrorHandler: showUserError,
+    notifyNewerVersionHandler: notifyNewerVersion,
   );
   late RedeemHandlers _redeemHandlers = RedeemHandlers(
     redeemRunningHandler: _redeemRunning,
@@ -108,7 +112,48 @@ class _MainScreenState extends State<MainScreen>
     }
   }
 
-  bool showBrutusMessage(String text, {Duration? duration}) {
+  void notifyNewerVersion() {
+    showBrutusMessage(
+      '',
+      duration: Duration(seconds: 4),
+      child: RichText(
+        text: TextSpan(
+          children: [
+            TextSpan(
+              text: 'There\'s a ',
+              style: TextStyle(
+                fontSize: 16.0,
+                color: AppearanceManager().color.snackBarText,
+              ),
+            ),
+            TextSpan(
+              text: 'newer version',
+              style: TextStyle(
+                fontSize: 16.0,
+                fontWeight: FontWeight.bold,
+                decoration: TextDecoration.underline,
+                color: AppearanceManager().color.mainBright,
+              ),
+              recognizer: TapGestureRecognizer()
+                ..onTap = () {
+                  launch(kLinks.storeLink);
+                },
+            ),
+            TextSpan(
+              text: ' of this app - just Saying 😅',
+              style: TextStyle(
+                fontSize: 16.0,
+                color: AppearanceManager().color.snackBarText,
+              ),
+            ),
+          ],
+        ),
+        textAlign: TextAlign.center,
+      ),
+    );
+  }
+
+  bool showBrutusMessage(String text, {Duration? duration, Widget? child}) {
     if (_scaffoldKey.currentState?.isDrawerOpen ?? false) {
       return false;
     }
@@ -127,14 +172,15 @@ class _MainScreenState extends State<MainScreen>
             nip: BubbleNip.rightTop,
             alignment: Alignment.topRight,
             color: AppearanceManager().color.snackBar,
-            child: Text(
-              text,
-              style: TextStyle(
-                fontSize: 16.0,
-                color: AppearanceManager().color.snackBarText,
-              ),
-              textAlign: TextAlign.center,
-            ),
+            child: child ??
+                Text(
+                  text,
+                  style: TextStyle(
+                    fontSize: 16.0,
+                    color: AppearanceManager().color.snackBarText,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
           ),
         ),
       ),

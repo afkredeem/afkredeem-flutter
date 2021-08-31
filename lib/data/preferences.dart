@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:package_info/package_info.dart';
 
 import 'package:afk_redeem/data/consts.dart';
 import 'package:afk_redeem/data/redemption_code.dart';
@@ -14,10 +15,13 @@ class Preferences {
   }
 
   SharedPreferences _prefs;
+  PackageInfo _packageInfo;
+
   bool _isHypogean;
   String _userID;
   bool _wasDisclosureApproved;
   bool _wasFirstConnectionSuccessful;
+  int _appInStoreVersion;
   int _redeemApiVersion;
   int _appInStoreApiVersionSupport;
   List<RedemptionCode> redemptionCodes;
@@ -27,6 +31,7 @@ class Preferences {
   String get userID => _userID;
   bool get wasDisclosureApproved => _wasDisclosureApproved;
   bool get wasFirstConnectionSuccessful => _wasFirstConnectionSuccessful;
+  int get appInStoreVersion => _appInStoreVersion;
   int get redeemApiVersion => _redeemApiVersion;
   int get appInStoreApiVersionSupport => _appInStoreApiVersionSupport;
 
@@ -48,6 +53,11 @@ class Preferences {
   set wasFirstConnectionSuccessful(bool value) {
     _wasFirstConnectionSuccessful = value;
     _prefs.setBool('wasFirstConnectionSuccessful', value);
+  }
+
+  set appInStoreVersion(int value) {
+    _appInStoreVersion = value;
+    _prefs.setInt('appInStoreVersion', value);
   }
 
   set redeemApiVersion(int value) {
@@ -72,18 +82,22 @@ class Preferences {
     if (_singleton != null) {
       return _singleton!;
     }
-    SharedPreferences sp = await SharedPreferences.getInstance();
-    _singleton = Preferences._create(sp);
+    var sharedPreferences = SharedPreferences.getInstance();
+    var packageInfo = PackageInfo.fromPlatform();
+    _singleton =
+        Preferences._create(await sharedPreferences, await packageInfo);
     return _singleton!;
   }
 
-  Preferences._create(this._prefs)
+  Preferences._create(this._prefs, this._packageInfo)
       : _isHypogean = _prefs.getBool('isHypogean') ?? true,
         _userID = _prefs.getString('userID') ?? '',
         _wasDisclosureApproved =
             _prefs.getBool('wasDisclosureApproved') ?? false,
         _wasFirstConnectionSuccessful =
             _prefs.getBool('wasFirstConnectionSuccessful') ?? false,
+        _appInStoreVersion =
+            _prefs.getInt('appInStoreVersion') ?? kDefaultAppInStoreVersion,
         _redeemApiVersion =
             _prefs.getInt('redeemApiVersion') ?? kDefaultRedeemApiVersion,
         _appInStoreApiVersionSupport =
@@ -113,13 +127,19 @@ class Preferences {
     );
     redeemApiVersion = jsonReader.read('redeemApiVersion');
     if (Platform.isAndroid) {
+      appInStoreVersion = jsonReader.read('androidStoreAppVersion');
       appInStoreApiVersionSupport =
           jsonReader.read('androidAppApiVersionSupport');
     } else if (Platform.isIOS) {
+      appInStoreVersion = jsonReader.read('iosStoreAppVersion');
       appInStoreApiVersionSupport = jsonReader.read('iosAppApiVersionSupport');
     } else {
       throw Exception('Unsupported platform for api version config data');
     }
+  }
+
+  bool get isAppUpgradable {
+    return appInStoreVersion > int.parse(_packageInfo.buildNumber);
   }
 
   bool get isRedeemApiVersionSupported {
