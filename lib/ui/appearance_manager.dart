@@ -124,11 +124,11 @@ class AppearanceManager {
     );
   }
 
-  SnackBar errorSnackBar(UserMessage userMessage) {
+  SnackBar errorSnackBar(UserMessage userMessage, {Duration? duration}) {
     return snackBar(
       userMessage,
       backgroundColor: color.snackBarError,
-      duration: Duration(seconds: 3),
+      duration: duration ?? Duration(seconds: 3),
     );
   }
 

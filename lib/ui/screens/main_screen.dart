@@ -218,10 +218,20 @@ class _MainScreenState extends State<MainScreen>
     );
   }
 
+  Future<void> _notifyMissingUserId(BuildContext context) async {
+    Duration duration = Duration(seconds: 2);
+    ScaffoldMessenger.of(context).showSnackBar(
+      AppearanceManager()
+          .errorSnackBar(UserMessage.missingUserId, duration: duration),
+    );
+    await Future.delayed(duration);
+    _scaffoldKey.currentState?.openDrawer();
+    _userIdFocusNode.requestFocus();
+  }
+
   Future<void> _redeemSelectedCodes(BuildContext context) async {
     if (_userIdController.text == '') {
-      ScaffoldMessenger.of(context).showSnackBar(
-          AppearanceManager().errorSnackBar(UserMessage.missingUserId));
+      _notifyMissingUserId(context);
       return;
     }
     _isRedeemingSelectedCodes = true;
@@ -526,9 +536,7 @@ class _MainScreenState extends State<MainScreen>
                             _brutusAnimationController.reset();
                             _brutusAnimationController.forward();
                             if (_userIdController.text == '') {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                  AppearanceManager().errorSnackBar(
-                                      UserMessage.missingUserId));
+                              _notifyMissingUserId(context);
                               return;
                             }
                             _isRedeemingSelectedCodes = false;
