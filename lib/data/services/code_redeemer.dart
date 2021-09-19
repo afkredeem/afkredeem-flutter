@@ -114,7 +114,7 @@ class CodeRedeemer {
       json: response.data as Map<String, dynamic>,
     );
 
-    _redeemForAccount();
+    await _redeemForAccount();
   }
 
   bool _shouldRedeemForUser(AccountInfo account, AccountInfo? selectedAccount) {
@@ -128,7 +128,7 @@ class CodeRedeemer {
 
   Future<void> redeemForAccount(AccountInfo selectedAccount) async {
     handlers.redeemRunningHandler();
-    _redeemForAccount(selectedAccount: selectedAccount);
+    await _redeemForAccount(selectedAccount: selectedAccount);
   }
 
   Future<void> _redeemForAccount({AccountInfo? selectedAccount}) async {
