@@ -204,6 +204,7 @@ class CodeRedeemer {
         case 'ok':
           accountRedeemSummary.redeemedCodes.add(redemptionCode);
           break;
+        case 'err_cdkey_already_used':
         case 'err_cdkey_batch_error':
           accountRedeemSummary.usedCodes.add(redemptionCode);
           break;
