@@ -24,7 +24,8 @@ class AppearanceManager {
 
   Map<UserMessage, String> _userMessages = {
     UserMessage.connectionFailed: 'Connection failed ☠️',
-    UserMessage.parseError: 'Parse error ☠️',
+    UserMessage.parseError:
+        'Sry 😕\nWe\'ve ran into a parser error\nhope it\'s fixed soon\n\n[if not, write us!]',
     UserMessage.verificationFailed: 'Verification failed ⛔',
     UserMessage.missingUserId: 'Missing User ID',
     UserMessage.cantBeEmpty: 'Can\'t be empty',
