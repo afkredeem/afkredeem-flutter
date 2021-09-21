@@ -140,7 +140,7 @@ class RedemptionCodeCard extends StatelessWidget {
                                                   .showSnackBar(
                                                       AppearanceManager()
                                                           .snackBarStr(
-                                                "You've already made the choice\nYou're here to understand why you've made it",
+                                                "You've already made the choice\nNow you have to understand it",
                                                 duration: Duration(seconds: 3),
                                               ));
                                             } else {
