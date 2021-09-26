@@ -17,6 +17,7 @@ class AfkRedeemApi {
     required this.appMessageHandler,
     required this.userErrorHandler,
     required this.notifyNewerVersionHandler,
+    required this.applyThemeHandler,
   }) {
     _dio.options.connectTimeout = kConnectTimeoutMilli;
     _dio.options.receiveTimeout = kReceiveTimeoutMilli;
@@ -27,6 +28,7 @@ class AfkRedeemApi {
   AppMessageHandler appMessageHandler;
   UserErrorHandler userErrorHandler;
   Function() notifyNewerVersionHandler;
+  Function() applyThemeHandler;
 
   Future<String?> getPage(String uri) async {
     String url = kLinks.afkRedeemApiHost + uri;
@@ -88,6 +90,7 @@ class AfkRedeemApi {
     Preferences().updateConfigData(
       configData: jsonReader.read('config'),
       userErrorHandler: userErrorHandler,
+      applyThemeHandler: applyThemeHandler,
     );
 
     // update codes (preferences + ui handler)

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:package_info/package_info.dart';
 
@@ -24,6 +25,9 @@ class Preferences {
   int _appInStoreVersion;
   int _redeemApiVersion;
   int _appInStoreApiVersionSupport;
+  DateTime _christmasThemeStartDate;
+  DateTime _christmasThemeEndDate;
+
   List<RedemptionCode> redemptionCodes;
   Map<String, RedemptionCode> redemptionCodesMap;
 
@@ -34,6 +38,8 @@ class Preferences {
   int get appInStoreVersion => _appInStoreVersion;
   int get redeemApiVersion => _redeemApiVersion;
   int get appInStoreApiVersionSupport => _appInStoreApiVersionSupport;
+  DateTime get christmasThemeStartDate => _christmasThemeStartDate;
+  DateTime get christmasThemeEndDate => _christmasThemeEndDate;
 
   set userID(String value) {
     _userID = value;
@@ -70,6 +76,18 @@ class Preferences {
     _prefs.setInt('appInStoreApiVersionSupport', value);
   }
 
+  set christmasThemeStartDate(DateTime value) {
+    _christmasThemeStartDate = value;
+    _prefs.setString(
+        'christmasThemeStartDate', DateFormat('yyyy-MM-dd').format(value));
+  }
+
+  set christmasThemeEndDate(DateTime value) {
+    _christmasThemeEndDate = value;
+    _prefs.setString(
+        'christmasThemeEndDate', DateFormat('yyyy-MM-dd').format(value));
+  }
+
   bool wasAppMessageShown(int messageId) {
     return _prefs.getBool('appMessageShown-$messageId') ?? false;
   }
@@ -103,6 +121,10 @@ class Preferences {
         _appInStoreApiVersionSupport =
             _prefs.getInt('appInStoreApiVersionSupport') ??
                 kDefaultAppInStoreApiVersionSupport,
+        _christmasThemeStartDate = DateTime.parse(
+            _prefs.getString('christmasThemeStartDate') ?? '2222-01-01'),
+        _christmasThemeEndDate = DateTime.parse(
+            _prefs.getString('christmasThemeEndDate') ?? '2222-01-01'),
         redemptionCodes =
             _codesFromJsonString(_prefs.getString('redemptionCodes')),
         redemptionCodesMap = {} {
@@ -120,6 +142,7 @@ class Preferences {
   void updateConfigData({
     required Map<String, dynamic> configData,
     required UserErrorHandler userErrorHandler,
+    required Function() applyThemeHandler,
   }) {
     JsonReader jsonReader = JsonReader(
       context: 'Preferences::updateConfigData',
@@ -136,6 +159,14 @@ class Preferences {
     } else {
       throw Exception('Unsupported platform for api version config data');
     }
+    bool wasChristmasTime = isChristmasTime;
+    christmasThemeStartDate =
+        DateTime.parse(jsonReader.read('christmasThemeStartDate'));
+    christmasThemeEndDate =
+        DateTime.parse(jsonReader.read('christmasThemeEndDate'));
+    if (wasChristmasTime != isChristmasTime) {
+      applyThemeHandler(); // christmas changed
+    }
   }
 
   bool get isAppUpgradable {
@@ -148,6 +179,11 @@ class Preferences {
 
   bool get isRedeemApiVersionUpgradable {
     return redeemApiVersion <= appInStoreApiVersionSupport;
+  }
+
+  bool get isChristmasTime {
+    return DateTime.now().isAfter(_christmasThemeStartDate) &&
+        DateTime.now().isBefore(_christmasThemeEndDate);
   }
 
   void updateRedeemedCodes(List<RedemptionCode> redeemed) {

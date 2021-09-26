@@ -8,7 +8,8 @@ class ImageManager {
   }
 
   static const String _imagesDir = 'images';
-  static Image _unknownImage = Image.asset('$_imagesDir/unknown.png');
+  static const String _unknownImagePath = '$_imagesDir/unknown.png';
+  static Image _unknownImage = Image.asset(_unknownImagePath);
   static const Map<String, bool> _jpgImages =
       {}; // maps image name to whether theme-specific or not
   static const Map<String, bool> _pngImages = {
@@ -16,6 +17,7 @@ class ImageManager {
     'app_background': true,
     'panel_background': true,
     'drawer_background': true,
+    'brutus': true,
     'dragon': true,
     'celestial_icon': false,
     'hypogean_icon': false,
@@ -55,6 +57,16 @@ class ImageManager {
     return _jpgImages.containsKey(name) || _pngImages.containsKey(name);
   }
 
+  String getPath(String name) {
+    if (_jpgImages.containsKey(name)) {
+      return _imagePath(name, _jpgImages[name]!, 'jpg');
+    }
+    if (_pngImages.containsKey(name)) {
+      return _imagePath(name, _pngImages[name]!, 'png');
+    }
+    return _unknownImagePath;
+  }
+
   Image get(String name) {
     if (_images.containsKey(name)) {
       return _images[name]!;
@@ -73,9 +85,12 @@ class ImageManager {
     _images.clear();
   }
 
+  String _imagePath(String name, bool isThemed, extension) {
+    return '$_imagesDir/${isThemed ? '$_theme/' : ''}$name.$extension';
+  }
+
   Image _createImageFromMap(String name, bool isThemed, String extension) {
-    Image image = Image.asset(
-        '$_imagesDir/${isThemed ? '$_theme/' : ''}$name.$extension');
+    Image image = Image.asset(_imagePath(name, isThemed, extension));
     _images[name] = image;
     return image;
   }

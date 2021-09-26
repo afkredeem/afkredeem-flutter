@@ -118,7 +118,7 @@ class RedeemDialog {
           controller: verificationCodeController,
           style: TextStyle(
             fontSize: 18.0,
-            color: AppearanceManager().color.text,
+            color: AppearanceManager().color.dialogText,
           ),
           keyboardType: TextInputType.number,
           inputFormatters: [
@@ -219,6 +219,7 @@ class RedeemDialog {
             ),
             trailing: Tooltip(
               padding: EdgeInsets.all(8.0),
+              margin: EdgeInsets.all(20.0),
               key: tooltipKey,
               message: 'Main Account - your main AFK Arena account 👑\n\n' +
                   'ALL Accounts - not recommended for vip codes since those can only be redeemed for a single account\n\n' +
@@ -243,7 +244,7 @@ class RedeemDialog {
               controller: redemptionCodeController,
               style: TextStyle(
                 fontSize: 18.0,
-                color: AppearanceManager().color.text,
+                color: AppearanceManager().color.dialogText,
               ),
               decoration: InputDecoration(hintText: 'redemption code'),
               textInputAction: TextInputAction.next,
@@ -264,7 +265,7 @@ class RedeemDialog {
               controller: verificationCodeController,
               style: TextStyle(
                 fontSize: 18.0,
-                color: AppearanceManager().color.text,
+                color: AppearanceManager().color.dialogText,
               ),
               keyboardType: TextInputType.number,
               inputFormatters: [
@@ -469,7 +470,7 @@ class _AccountRedeemStrategyDropdownState
       iconSize: 20,
       style: TextStyle(
         fontSize: 18.0,
-        color: AppearanceManager().color.text,
+        color: AppearanceManager().color.dialogText,
       ),
       dropdownColor: AppearanceManager().color.dialogBackground,
       underline: Container(
@@ -517,7 +518,7 @@ class _AccountSelectionDropdownState extends State<AccountSelectionDropdown> {
       iconSize: 20,
       style: TextStyle(
         fontSize: 18.0,
-        color: AppearanceManager().color.text,
+        color: AppearanceManager().color.dialogText,
       ),
       dropdownColor: AppearanceManager().color.dialogBackground,
       underline: Container(
@@ -560,7 +561,7 @@ class _AccountSelectionDropdownState extends State<AccountSelectionDropdown> {
               Text(
                 '   S${account.server}',
                 style: TextStyle(
-                  color: AppearanceManager().color.text,
+                  color: AppearanceManager().color.dialogText,
                   fontSize: 15.0,
                 ),
               ),

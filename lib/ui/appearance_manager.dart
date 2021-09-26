@@ -8,7 +8,7 @@ import 'package:afk_redeem/ui/image_manager.dart';
 class AppearanceManager {
   static final AppearanceManager _singleton = AppearanceManager._create();
   AppearanceManager._create() {
-    applyTheme(_theme);
+    _applyTheme(_theme);
 
     // user messages conversion sanity
     for (var userMessage in UserMessage.values) {
@@ -34,9 +34,13 @@ class AppearanceManager {
 
   Map<UserMessage, String> get userMessages => _userMessages;
 
-  String _theme = 'hypogean';
+  static const _hypogeanTheme = 'hypogean';
+  static const _celestialTheme = 'celestial';
+  static const _christmasTheme = 'christmas';
+
+  String _theme = _hypogeanTheme;
   final Map<String, AppearanceSettings> _colorThemes = {
-    'hypogean': AppearanceSettings(
+    _hypogeanTheme: AppearanceSettings(
         colorPalette: ColorPalette(
           main: Color(0xFFC52ED0),
           mainText: Color(0xFFC52ED0),
@@ -56,14 +60,15 @@ class AppearanceManager {
           appBackgroundBlend: Color(0xFF4B4B4B),
           dialogBackground: Color(0xFF27213D),
           dialogBackgroundOverlay: Color(0xFF372F57),
-          dialogText: Color(0xFFD888EE),
+          dialogTitleText: Color(0xFFD888EE),
+          dialogText: Color(0xFFC2C2C2),
           inactiveSwitch: Color(0xFFFFE89A),
           red: Colors.red,
           yellow: Colors.yellow,
           green: Colors.green,
         ),
         backgroundTransparencyFactor: 0.2),
-    'celestial': AppearanceSettings(
+    _celestialTheme: AppearanceSettings(
         colorPalette: ColorPalette(
           main: Color(0xFFEEB900),
           mainText: Color(0xFFB88E00),
@@ -83,13 +88,42 @@ class AppearanceManager {
           appBackgroundBlend: Color(0xFFFFFFFF),
           dialogBackground: Color(0xFFFFFCF7),
           dialogBackgroundOverlay: Color(0xFFFFEFD6),
-          dialogText: Color(0xFF5E5E5E),
+          dialogTitleText: Color(0xFF5E5E5E),
+          dialogText: Color(0xFF242424),
           inactiveSwitch: Color(0xFFFFE89A),
           red: Color(0xFFE51C0B),
           yellow: Color(0xFFEEB900),
           green: Color(0xFF129915),
         ),
         backgroundTransparencyFactor: 1.0),
+    _christmasTheme: AppearanceSettings(
+        colorPalette: ColorPalette(
+          main: Color(0xFFD02E2E),
+          mainText: Color(0xFFD02E2E),
+          mainBright: Color(0xFFE55959),
+          snackBar: Color(0xFF790808),
+          snackBarText: Color(0xFFE2E2E2),
+          snackBarError: Color(0xFF682121),
+          text: Color(0xFFC2C2C2),
+          boldText: Color(0xFFEFEFEF),
+          giftText: Color(0xFFA5A5A5),
+          hintText: Color(0xFFA1A1A1),
+          dateText: Color(0xFF979797),
+          disabled: Color(0xFF727272),
+          appBarText: Color(0xFFFFFFFF),
+          textFieldHiddenBorder: Color(0xFF000000),
+          background: Color(0xFF170909),
+          appBackgroundBlend: Color(0xFF4B4B4B),
+          dialogBackground: Color(0xFFEFEFEF),
+          dialogBackgroundOverlay: Color(0xFFFFC9C9),
+          dialogTitleText: Color(0xFFB30000),
+          dialogText: Color(0xFF424242),
+          inactiveSwitch: Color(0xFFECB5B5),
+          red: Color(0xFFE51C0B),
+          yellow: Color(0xFFEEB900),
+          green: Color(0xFF129915),
+        ),
+        backgroundTransparencyFactor: 0.25),
   };
 
   AppearanceSettings get setting {
@@ -137,14 +171,26 @@ class AppearanceManager {
     return Preferences().isHypogean;
   }
 
-  void updateTheme({required bool isHypogean, bool updatePreferences = true}) {
-    applyTheme(isHypogean ? 'hypogean' : 'celestial');
-    if (updatePreferences) {
-      Preferences().isHypogean = isHypogean;
+  void updateTheme(bool isHypogean) {
+    applyTheme(isHypogean: isHypogean);
+    Preferences().isHypogean = isHypogean;
+  }
+
+  void applyTheme({bool? isHypogean, bool? isChristmas}) {
+    if (isChristmas ?? false) {
+      _applyTheme(_christmasTheme);
+    } else if (isHypogean != null) {
+      if (isHypogean) {
+        _applyTheme(_hypogeanTheme);
+      } else {
+        _applyTheme(_celestialTheme);
+      }
     }
   }
 
-  void applyTheme(String theme) {
+  bool get isChristmasThemeOn => _theme == _christmasTheme;
+
+  void _applyTheme(String theme) {
     _colorThemes[theme]!; // throw exception if unsupported theme
     _theme = theme;
     ImageManager().applyTheme(theme);
@@ -187,7 +233,7 @@ class AppearanceManager {
         backgroundColor: color.dialogBackground,
         titleTextStyle: TextStyle(
           fontSize: 20.0,
-          color: color.dialogText,
+          color: color.dialogTitleText,
         ),
         contentTextStyle: TextStyle(
           color: color.dialogText,
@@ -208,6 +254,13 @@ class AppearanceManager {
       ),
     );
   }
+}
+
+class UserMessageInfo {
+  String message;
+  Duration duration;
+
+  UserMessageInfo(this.message, this.duration);
 }
 
 class AppearanceSettings {
@@ -239,6 +292,7 @@ class ColorPalette {
   final Color appBackgroundBlend;
   final Color dialogBackground;
   final Color dialogBackgroundOverlay;
+  final Color dialogTitleText;
   final Color dialogText;
   final Color inactiveSwitch;
   final Color red;
@@ -264,6 +318,7 @@ class ColorPalette {
     "appBackgroundBlend": appBackgroundBlend,
     "dialogBackground": dialogBackground,
     "dialogBackgroundOverlay": dialogBackgroundOverlay,
+    "dialogTitleText": dialogTitleText,
     "dialogText": dialogText,
     "inactiveSwitch": inactiveSwitch,
     "red": red,
@@ -290,6 +345,7 @@ class ColorPalette {
       required this.appBackgroundBlend,
       required this.dialogBackground,
       required this.dialogBackgroundOverlay,
+      required this.dialogTitleText,
       required this.dialogText,
       required this.inactiveSwitch,
       required this.red,

@@ -28,9 +28,9 @@ class AfkRedeemApp extends StatelessWidget {
           if (!snapshot.hasData) {
             return Container();
           }
-          AppearanceManager().updateTheme(
+          AppearanceManager().applyTheme(
+            isChristmas: snapshot.data!.isChristmasTime,
             isHypogean: snapshot.data!.isHypogean,
-            updatePreferences: false,
           );
           return AppBuilder(
             builder: (context) => MaterialApp(

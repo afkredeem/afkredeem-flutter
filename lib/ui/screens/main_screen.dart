@@ -27,6 +27,7 @@ import 'package:afk_redeem/ui/components/redemption_summary_dialog.dart';
 import 'package:afk_redeem/ui/components/error_dialog.dart';
 import 'package:afk_redeem/ui/components/drawer_links.dart';
 import 'package:afk_redeem/ui/components/redeem_dialog.dart';
+import 'package:afk_redeem/ui/components/snow_animation.dart';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -42,6 +43,7 @@ class _MainScreenState extends State<MainScreen>
     appMessageHandler: showBrutusMessage,
     userErrorHandler: showUserError,
     notifyNewerVersionHandler: notifyNewerVersion,
+    applyThemeHandler: applyTheme,
   );
   late RedeemHandlers _redeemHandlers = RedeemHandlers(
     redeemRunningHandler: _redeemRunning,
@@ -110,6 +112,16 @@ class _MainScreenState extends State<MainScreen>
       _scaffoldKey.currentState?.openDrawer();
       _userIdFocusNode.requestFocus();
     }
+  }
+
+  void applyTheme() {
+    setState(() {
+      AppearanceManager().applyTheme(
+        isChristmas: Preferences().isChristmasTime,
+        isHypogean: Preferences().isHypogean,
+      );
+    });
+    AppBuilder.of(context).rebuild();
   }
 
   void notifyNewerVersion() {
@@ -473,11 +485,11 @@ class _MainScreenState extends State<MainScreen>
                                                     AppearanceManager()
                                                         .color
                                                         .inactiveSwitch,
-                                                onChanged: (value) {
+                                                onChanged: (isHypogean) {
                                                   setState(() {
                                                     AppearanceManager()
                                                         .updateTheme(
-                                                            isHypogean: value);
+                                                            isHypogean);
                                                   });
                                                   AppBuilder.of(context)
                                                       .rebuild();
@@ -532,93 +544,107 @@ class _MainScreenState extends State<MainScreen>
             child: SafeArea(
               child: Container(
                 padding: EdgeInsets.only(top: 5.0, left: 5.0, right: 5.0),
-                child: AppBar(
-                  elevation: 8,
-                  // backgroundColor: MAIN_COLOR,
-                  backgroundColor: Colors.transparent,
-                  iconTheme: IconThemeData(
-                    color: AppearanceManager().color.appBarText,
+                child: Container(
+                  decoration: BoxDecoration(
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppearanceManager()
+                            .color
+                            .mainBright
+                            .withOpacity(0.5),
+                        offset: Offset(2.0, 2.0),
+                        blurRadius: 6.0,
+                      )
+                    ],
                   ),
-                  flexibleSpace: Padding(
-                    padding: const EdgeInsets.all(5.0),
-                    child: Image(
-                        image: ImageManager().get('panel_background').image,
-                        fit: BoxFit.cover),
-                  ),
-                  title: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      _selectedRedemptionCodes.isEmpty
-                          ? AnimatedTextKit(
-                              // use key on text color to support re-build on color change
-                              key: ValueKey(
-                                  AppearanceManager().color.appBarText),
-                              animatedTexts: [
-                                TypewriterAnimatedText(
-                                  "AFK Redeem",
-                                  textStyle: TextStyle(
-                                    color: AppearanceManager().color.appBarText,
+                  child: AppBar(
+                    elevation: 8,
+                    backgroundColor: Colors.transparent,
+                    iconTheme: IconThemeData(
+                      color: AppearanceManager().color.appBarText,
+                    ),
+                    flexibleSpace: Padding(
+                      padding: const EdgeInsets.all(5.0),
+                      child: Image(
+                          image: ImageManager().get('panel_background').image,
+                          fit: BoxFit.cover),
+                    ),
+                    title: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        _selectedRedemptionCodes.isEmpty
+                            ? AnimatedTextKit(
+                                // use key on text color to support re-build on color change
+                                key: ValueKey(
+                                    AppearanceManager().color.appBarText),
+                                animatedTexts: [
+                                  TypewriterAnimatedText(
+                                    "AFK Redeem",
+                                    textStyle: TextStyle(
+                                      color:
+                                          AppearanceManager().color.appBarText,
+                                    ),
+                                    speed: Duration(milliseconds: 150),
                                   ),
-                                  speed: Duration(milliseconds: 150),
+                                ],
+                                isRepeatingAnimation: false,
+                              )
+                            : IconButton(
+                                padding: EdgeInsets.zero,
+                                constraints: BoxConstraints(),
+                                onPressed: () {
+                                  _redeemSelectedCodes(context);
+                                },
+                                iconSize: 32.0,
+                                icon: Icon(
+                                  CupertinoIcons.gift,
                                 ),
-                              ],
-                              isRepeatingAnimation: false,
-                            )
-                          : IconButton(
-                              padding: EdgeInsets.zero,
-                              constraints: BoxConstraints(),
-                              onPressed: () {
-                                _redeemSelectedCodes(context);
-                              },
-                              iconSize: 32.0,
-                              icon: Icon(
-                                CupertinoIcons.gift,
                               ),
-                            ),
-                      Padding(
-                        padding: const EdgeInsets.only(right: 20.0),
-                        child: GestureDetector(
-                          onTap: () async {
-                            _brutusAnimationController.reset();
-                            _brutusAnimationController.forward();
-                            if (_userIdController.text == '') {
-                              _notifyMissingUserId(context);
-                              return;
-                            }
-                            _isRedeemingSelectedCodes = false;
-                            ClipboardData? clipboardData =
-                                await Clipboard.getData(Clipboard.kTextPlain);
-                            AlertDialog? redeemDialog =
-                                await RedeemDialog.manualCode(
-                                    context,
-                                    _afkRedeemApi,
-                                    _userIdController.text,
-                                    clipboardData,
-                                    _redeemHandlers);
-                            if (redeemDialog != null) {
-                              showDialog<String>(
-                                context: context,
-                                builder: (_) => redeemDialog,
-                              );
-                            }
-                          },
-                          onLongPress: () {
-                            HapticFeedback.vibrate();
-                            _brutusAnimationController.reset();
-                            _brutusAnimationController.forward();
-                            showBrutusMessage(
-                                'All I ever had\n🎵 Redemption songs 🎵');
-                          },
-                          child: Container(
-                            key: _brutusKey,
-                            child: Image.asset(
-                              'images/brutus.png',
-                              height: _brutusHeight,
+                        Padding(
+                          padding: const EdgeInsets.only(right: 20.0),
+                          child: GestureDetector(
+                            onTap: () async {
+                              _brutusAnimationController.reset();
+                              _brutusAnimationController.forward();
+                              if (_userIdController.text == '') {
+                                _notifyMissingUserId(context);
+                                return;
+                              }
+                              _isRedeemingSelectedCodes = false;
+                              ClipboardData? clipboardData =
+                                  await Clipboard.getData(Clipboard.kTextPlain);
+                              AlertDialog? redeemDialog =
+                                  await RedeemDialog.manualCode(
+                                      context,
+                                      _afkRedeemApi,
+                                      _userIdController.text,
+                                      clipboardData,
+                                      _redeemHandlers);
+                              if (redeemDialog != null) {
+                                showDialog<String>(
+                                  context: context,
+                                  builder: (_) => redeemDialog,
+                                );
+                              }
+                            },
+                            onLongPress: () {
+                              HapticFeedback.vibrate();
+                              _brutusAnimationController.reset();
+                              _brutusAnimationController.forward();
+                              showBrutusMessage(
+                                  'All I ever had\n🎵 Redemption songs 🎵');
+                            },
+                            child: Container(
+                              key: _brutusKey,
+                              child: Image.asset(
+                                ImageManager().getPath('brutus'),
+                                height: _brutusHeight,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -627,24 +653,34 @@ class _MainScreenState extends State<MainScreen>
           body: SafeArea(
             child: Padding(
               padding: const EdgeInsets.only(top: 7.0),
-              child: SmartRefresher(
-                controller: _refreshController,
-                enablePullDown: true,
-                header: WaterDropMaterialHeader(),
-                onRefresh: _onRefresh,
-                child: ListView(
-                  children: [
-                    Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          for (var redemptionCode in _redemptionCodes)
-                            if (!redemptionCode.isHidden)
-                              RedemptionCodeCard(
-                                  redemptionCode, redemptionCodeSelected)
-                        ]),
-                  ],
-                ),
+              child: Stack(
+                children: [
+                  if (AppearanceManager().isChristmasThemeOn)
+                    SnowWidget(
+                      isRunning: true,
+                      totalSnow: 40,
+                      speed: 0.2,
+                    ),
+                  SmartRefresher(
+                    controller: _refreshController,
+                    enablePullDown: true,
+                    header: WaterDropMaterialHeader(),
+                    onRefresh: _onRefresh,
+                    child: ListView(
+                      children: [
+                        Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              for (var redemptionCode in _redemptionCodes)
+                                if (!redemptionCode.isHidden)
+                                  RedemptionCodeCard(
+                                      redemptionCode, redemptionCodeSelected)
+                            ]),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ),
           ),

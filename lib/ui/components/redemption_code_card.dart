@@ -143,9 +143,8 @@ class RedemptionCodeCard extends StatelessWidget {
                                                 "You've already made the choice\nNow you have to understand it",
                                                 duration: Duration(seconds: 3),
                                               ));
-                                            } else {
-                                              selected(toggle: true);
                                             }
+                                            selected(toggle: true);
                                           } else {
                                             ScaffoldMessenger.of(context)
                                                 .showSnackBar(

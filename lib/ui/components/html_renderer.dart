@@ -50,6 +50,9 @@ class HtmlRenderer {
         "a": Style(
           color: AppearanceManager().color.main,
         ),
+        "body": Style(
+          color: AppearanceManager().color.dialogText,
+        ),
       },
       customRender: {
         "color": (RenderContext context, Widget child) {

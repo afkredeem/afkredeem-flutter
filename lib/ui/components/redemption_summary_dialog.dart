@@ -62,7 +62,7 @@ AlertDialog redemptionSummaryDialog(
                           Text(
                             'S${accountRedeemSummary.account.server}',
                             style: TextStyle(
-                              color: AppearanceManager().color.text,
+                              color: AppearanceManager().color.dialogText,
                               fontSize: 14.0,
                             ),
                           ),
@@ -189,7 +189,7 @@ Widget codesList(BuildContext context, List<RedemptionCode> codes, String title,
         ),
         TextSpan(
           text: '${codes.map((rc) => rc.code).join('\n')}\n',
-          style: Theme.of(context).textTheme.bodyText1,
+          style: TextStyle(color: AppearanceManager().color.dialogText),
         ),
       ],
     ),
