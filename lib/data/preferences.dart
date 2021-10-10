@@ -213,21 +213,12 @@ class Preferences {
     wasFirstConnectionSuccessful = true;
     List<RedemptionCode> newCodes =
         _codesFromJson(newCodesJson, userErrorHandler: userErrorHandler);
-    if (redemptionCodes.isEmpty) {
-      // first codes update
-      redemptionCodes = newCodes;
-      redemptionCodes.forEach((rc) {
-        rc.wasRedeemed = true; // mark all redeemed
-      });
-      redemptionCodesMap = {for (var rc in redemptionCodes) rc.code: rc};
-    } else {
-      for (RedemptionCode newRC in newCodes) {
-        if (redemptionCodesMap.containsKey(newRC.code)) {
-          redemptionCodesMap[newRC.code]!.updateFromExternalSource(newRC);
-        } else {
-          redemptionCodes.add(newRC);
-          redemptionCodesMap[newRC.code] = newRC;
-        }
+    for (RedemptionCode newRC in newCodes) {
+      if (redemptionCodesMap.containsKey(newRC.code)) {
+        redemptionCodesMap[newRC.code]!.updateFromExternalSource(newRC);
+      } else {
+        redemptionCodes.add(newRC);
+        redemptionCodesMap[newRC.code] = newRC;
       }
     }
     // sort by isActive & date

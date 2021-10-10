@@ -73,16 +73,23 @@ class _MainScreenState extends State<MainScreen>
     });
     setState(() {
       _userIdEmpty = _userIdController.text == '';
-      for (RedemptionCode redemptionCode in Preferences().redemptionCodes) {
-        if (redemptionCode.shouldRedeem) {
-          _selectedRedemptionCodes.add(redemptionCode);
-        }
-      }
+      _selectNewNonRedeemedCodes();
     });
     // components are not ready - delay using them
     Future.delayed(Duration.zero, () {
       _handlePrerequisites();
     });
+  }
+
+  void _selectNewNonRedeemedCodes() {
+    if (Preferences().wasManualRedeemMessageShown) {
+      // select all codes only after first clean interaction
+      for (RedemptionCode redemptionCode in Preferences().redemptionCodes) {
+        if (redemptionCode.shouldRedeem) {
+          _selectedRedemptionCodes.add(redemptionCode);
+        }
+      }
+    }
   }
 
   void _handlePrerequisites() async {
@@ -198,12 +205,7 @@ class _MainScreenState extends State<MainScreen>
   void updateRedemptionCodes(List<RedemptionCode> redemptionCodes) {
     setState(() {
       _redemptionCodes = redemptionCodes;
-      // select new (non-redeemed) codes
-      for (RedemptionCode code in Preferences().redemptionCodes) {
-        if (code.shouldRedeem) {
-          _selectedRedemptionCodes.add(code);
-        }
-      }
+      _selectNewNonRedeemedCodes();
     });
   }
 
