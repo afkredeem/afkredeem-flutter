@@ -96,12 +96,6 @@ class _MainScreenState extends State<MainScreen>
     }
 
     _refreshController.requestRefresh();
-
-    // user id is empty, open drawer & focus on user id text field
-    if (_userIdController.text == '') {
-      _scaffoldKey.currentState?.openDrawer();
-      _userIdFocusNode.requestFocus();
-    }
   }
 
   void applyTheme() {

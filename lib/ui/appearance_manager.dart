@@ -27,7 +27,7 @@ class AppearanceManager {
     UserMessage.parseError:
         'Sry 😕\nWe\'ve ran into a parser error\nhope it\'s fixed soon\n\n[if not, write us!]',
     UserMessage.verificationFailed: 'Verification failed ⛔',
-    UserMessage.missingUserId: 'Missing User ID',
+    UserMessage.missingUserId: 'Add User ID',
     UserMessage.cantBeEmpty: 'Can\'t be empty',
     UserMessage.copiedToClipboard: 'Copied to clipboard',
   };
