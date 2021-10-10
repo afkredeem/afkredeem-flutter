@@ -22,6 +22,7 @@ class Preferences {
   String _userID;
   bool _wasDisclosureApproved;
   bool _wasFirstConnectionSuccessful;
+  bool _wasManualRedeemMessageShown;
   int _appInStoreVersion;
   int _redeemApiVersion;
   int _appInStoreApiVersionSupport;
@@ -35,6 +36,7 @@ class Preferences {
   String get userID => _userID;
   bool get wasDisclosureApproved => _wasDisclosureApproved;
   bool get wasFirstConnectionSuccessful => _wasFirstConnectionSuccessful;
+  bool get wasManualRedeemMessageShown => _wasManualRedeemMessageShown;
   int get appInStoreVersion => _appInStoreVersion;
   int get redeemApiVersion => _redeemApiVersion;
   int get appInStoreApiVersionSupport => _appInStoreApiVersionSupport;
@@ -59,6 +61,11 @@ class Preferences {
   set wasFirstConnectionSuccessful(bool value) {
     _wasFirstConnectionSuccessful = value;
     _prefs.setBool('wasFirstConnectionSuccessful', value);
+  }
+
+  set wasManualRedeemMessageShown(bool value) {
+    _wasManualRedeemMessageShown = value;
+    _prefs.setBool('wasManualRedeemMessageShown', value);
   }
 
   set appInStoreVersion(int value) {
@@ -114,6 +121,8 @@ class Preferences {
             _prefs.getBool('wasDisclosureApproved') ?? false,
         _wasFirstConnectionSuccessful =
             _prefs.getBool('wasFirstConnectionSuccessful') ?? false,
+        _wasManualRedeemMessageShown =
+            _prefs.getBool('wasManualRedeemMessageShown') ?? false,
         _appInStoreVersion =
             _prefs.getInt('appInStoreVersion') ?? kDefaultAppInStoreVersion,
         _redeemApiVersion =
@@ -128,6 +137,10 @@ class Preferences {
         redemptionCodes =
             _codesFromJsonString(_prefs.getString('redemptionCodes')),
         redemptionCodesMap = {} {
+    if (wasAppMessageShown(kManualRedeemApiBrutusMessageId)) {
+      // old user has seen manual redeem message when it was an api brutus message
+      wasManualRedeemMessageShown = true;
+    }
     // can't rely on member redemptionCodes in initialization
     redemptionCodesMap = {for (var rc in redemptionCodes) rc.code: rc};
     // sort by isActive & date

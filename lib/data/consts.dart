@@ -24,6 +24,8 @@ const List<String> kAdsKeywords = [
 
 const int kConcurrentConsumeRequestsSoftLimit = 10;
 
+const int kManualRedeemApiBrutusMessageId = 1;
+
 // mixin wins over class cause it prevents the compiler from complaining about naming conventions
 mixin kLinks {
   // static const bool _emulateLilithRedeem = true;

@@ -229,7 +229,7 @@ class _MainScreenState extends State<MainScreen>
   }
 
   Future<void> _notifyMissingUserId(BuildContext context) async {
-    Duration duration = Duration(seconds: 2);
+    Duration duration = Duration(milliseconds: 1200);
     ScaffoldMessenger.of(context).showSnackBar(
       AppearanceManager()
           .errorSnackBar(UserMessage.missingUserId, duration: duration),
@@ -239,7 +239,7 @@ class _MainScreenState extends State<MainScreen>
     _userIdFocusNode.requestFocus();
   }
 
-  Future<void> _redeemSelectedCodes(BuildContext context) async {
+  void _redeemSelectedCodes(BuildContext context) {
     if (_userIdController.text == '') {
       _notifyMissingUserId(context);
       return;
@@ -252,7 +252,18 @@ class _MainScreenState extends State<MainScreen>
         redeemCompletedHandler: _redeemCompleted,
         redemptionCodes: _selectedRedemptionCodes,
       ),
-    );
+    ).then(_redeemDialogClosed);
+  }
+
+  void _redeemDialogClosed(value) async {
+    if (!Preferences().wasManualRedeemMessageShown) {
+      Preferences().wasManualRedeemMessageShown = true;
+      await Future.delayed(Duration(milliseconds: 500));
+      showBrutusMessage(
+        'Hi, touch me to redeem manually entered codes',
+        duration: Duration(seconds: 5),
+      );
+    }
   }
 
   bool redemptionCodeSelected(RedemptionCode redemptionCode,
@@ -570,7 +581,7 @@ class _MainScreenState extends State<MainScreen>
                                   redeemCompletedHandler: _redeemCompleted,
                                   clipboardData: clipboardData,
                                 ),
-                              );
+                              ).then(_redeemDialogClosed);
                             },
                             onLongPress: () {
                               HapticFeedback.vibrate();
