@@ -23,6 +23,7 @@ class Preferences {
   bool _wasDisclosureApproved;
   bool _wasFirstConnectionSuccessful;
   bool _wasManualRedeemMessageShown;
+  bool _forceChristmasTheme;
   int _appInStoreVersion;
   int _redeemApiVersion;
   int _appInStoreApiVersionSupport;
@@ -37,6 +38,7 @@ class Preferences {
   bool get wasDisclosureApproved => _wasDisclosureApproved;
   bool get wasFirstConnectionSuccessful => _wasFirstConnectionSuccessful;
   bool get wasManualRedeemMessageShown => _wasManualRedeemMessageShown;
+  bool get forceChristmasTheme => _forceChristmasTheme;
   int get appInStoreVersion => _appInStoreVersion;
   int get redeemApiVersion => _redeemApiVersion;
   int get appInStoreApiVersionSupport => _appInStoreApiVersionSupport;
@@ -49,6 +51,7 @@ class Preferences {
   }
 
   set isHypogean(bool value) {
+    _forceChristmasTheme = false;
     _isHypogean = value;
     _prefs.setBool('isHypogean', value);
   }
@@ -66,6 +69,11 @@ class Preferences {
   set wasManualRedeemMessageShown(bool value) {
     _wasManualRedeemMessageShown = value;
     _prefs.setBool('wasManualRedeemMessageShown', value);
+  }
+
+  set forceChristmasTheme(bool value) {
+    _forceChristmasTheme = value;
+    _prefs.setBool('forceChristmasTheme', value);
   }
 
   set appInStoreVersion(int value) {
@@ -123,6 +131,7 @@ class Preferences {
             _prefs.getBool('wasFirstConnectionSuccessful') ?? false,
         _wasManualRedeemMessageShown =
             _prefs.getBool('wasManualRedeemMessageShown') ?? false,
+        _forceChristmasTheme = _prefs.getBool('forceChristmasTheme') ?? false,
         _appInStoreVersion =
             _prefs.getInt('appInStoreVersion') ?? kDefaultAppInStoreVersion,
         _redeemApiVersion =
@@ -195,8 +204,9 @@ class Preferences {
   }
 
   bool get isChristmasTime {
-    return DateTime.now().isAfter(_christmasThemeStartDate) &&
-        DateTime.now().isBefore(_christmasThemeEndDate);
+    return forceChristmasTheme ||
+        DateTime.now().isAfter(_christmasThemeStartDate) &&
+            DateTime.now().isBefore(_christmasThemeEndDate);
   }
 
   void updateRedeemedCodes(List<RedemptionCode> redeemed) {

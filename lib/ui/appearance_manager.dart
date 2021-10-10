@@ -172,8 +172,8 @@ class AppearanceManager {
   }
 
   void updateTheme(bool isHypogean) {
-    applyTheme(isHypogean: isHypogean);
     Preferences().isHypogean = isHypogean;
+    applyTheme(isHypogean: isHypogean);
   }
 
   void applyTheme({bool? isHypogean, bool? isChristmas}) {

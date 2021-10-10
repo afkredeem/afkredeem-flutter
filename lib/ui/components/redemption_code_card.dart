@@ -1,3 +1,4 @@
+import 'package:afk_redeem/data/preferences.dart';
 import 'package:afk_redeem/data/user_message.dart';
 import 'package:afk_redeem/ui/appearance_manager.dart';
 import 'package:flutter/material.dart';
@@ -9,12 +10,52 @@ import 'package:afk_redeem/ui/image_manager.dart';
 
 class RedemptionCodeCard extends StatelessWidget {
   final RedemptionCode redemptionCode;
-  final Function(RedemptionCode, {bool toggle}) redemptionCodeSelected;
+  final Function(RedemptionCode, {bool toggle}) redemptionCodeSelectedHandler;
+  final Function() applyThemeHandler;
 
-  RedemptionCodeCard(this.redemptionCode, this.redemptionCodeSelected);
+  static const kCommonScrollForceChristmasValue = 5;
+  static int commonScrollForceChristmasCounter = 0;
+
+  RedemptionCodeCard({
+    required this.redemptionCode,
+    required this.redemptionCodeSelectedHandler,
+    required this.applyThemeHandler,
+  });
 
   bool selected({toggle = false}) {
-    return redemptionCodeSelected(redemptionCode, toggle: toggle);
+    return redemptionCodeSelectedHandler(redemptionCode, toggle: toggle);
+  }
+
+  void _onRedemptionCodeTap(BuildContext context, String giftKey) {
+    if (ImageManager().contains('gifts/$giftKey')) {
+      if (giftKey == 'diamonds' &&
+          commonScrollForceChristmasCounter ==
+              kCommonScrollForceChristmasValue) {
+        Preferences().forceChristmasTheme = true;
+        applyThemeHandler();
+        ScaffoldMessenger.of(context)
+            .showSnackBar(AppearanceManager().snackBarStr(
+          "🎅🏽🎅🏽🎅🏽   Christmas Forever   🎅🏽🎅🏽🎅🏽",
+          duration: Duration(seconds: 3),
+        ));
+      }
+      if (giftKey == 'common_scrolls') {
+        commonScrollForceChristmasCounter++;
+      } else {
+        commonScrollForceChristmasCounter = 0;
+      }
+      if (giftKey == 'stargazing_cards') {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(AppearanceManager().snackBarStr(
+          "You've already made the choice\nNow you have to understand it",
+          duration: Duration(seconds: 3),
+        ));
+      }
+      selected(toggle: true);
+    } else {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(AppearanceManager().snackBarStr(giftKey.toString()));
+    }
   }
 
   @override
@@ -132,26 +173,8 @@ class RedemptionCodeCard extends StatelessWidget {
                                       GestureDetector(
                                         behavior: HitTestBehavior.translucent,
                                         onTap: () {
-                                          if (ImageManager()
-                                              .contains('gifts/${gift.key}')) {
-                                            if (gift.key ==
-                                                'stargazing_cards') {
-                                              ScaffoldMessenger.of(context)
-                                                  .showSnackBar(
-                                                      AppearanceManager()
-                                                          .snackBarStr(
-                                                "You've already made the choice\nNow you have to understand it",
-                                                duration: Duration(seconds: 3),
-                                              ));
-                                            }
-                                            selected(toggle: true);
-                                          } else {
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(
-                                                    AppearanceManager()
-                                                        .snackBarStr(gift.key
-                                                            .toString()));
-                                          }
+                                          _onRedemptionCodeTap(
+                                              context, gift.key);
                                         },
                                         child: Container(
                                           height: 40,

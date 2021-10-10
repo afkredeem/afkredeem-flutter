@@ -652,7 +652,11 @@ class _MainScreenState extends State<MainScreen>
                               for (var redemptionCode in _redemptionCodes)
                                 if (!redemptionCode.isHidden)
                                   RedemptionCodeCard(
-                                      redemptionCode, redemptionCodeSelected)
+                                    redemptionCode: redemptionCode,
+                                    redemptionCodeSelectedHandler:
+                                        redemptionCodeSelected,
+                                    applyThemeHandler: applyTheme,
+                                  )
                             ]),
                       ],
                     ),
