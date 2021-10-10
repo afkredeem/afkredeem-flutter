@@ -197,9 +197,8 @@ class AppearanceManager {
   }
 
   ThemeData themeData() {
-    return ThemeData(
+    ThemeData theme = ThemeData(
       primaryColor: color.main,
-      accentColor: color.main,
       unselectedWidgetColor: color.main,
       disabledColor: color.disabled,
       textTheme: TextTheme(
@@ -252,6 +251,9 @@ class AppearanceManager {
           ),
         ),
       ),
+    );
+    return theme.copyWith(
+      colorScheme: theme.colorScheme.copyWith(secondary: color.main),
     );
   }
 }
