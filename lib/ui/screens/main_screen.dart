@@ -12,19 +12,16 @@ import 'package:afk_redeem/data/consts.dart';
 import 'package:afk_redeem/data/preferences.dart';
 import 'package:afk_redeem/data/redemption_code.dart';
 import 'package:afk_redeem/data/services/afk_redeem_api.dart';
-import 'package:afk_redeem/data/user_redeem_summary.dart';
 import 'package:afk_redeem/data/user_message.dart';
-import 'package:afk_redeem/data/services/code_redeemer.dart';
+import 'package:afk_redeem/data/account_redeem_summary.dart';
 import 'package:afk_redeem/ui/components/about_dialog.dart';
 import 'package:afk_redeem/ui/components/disclosure_dialog.dart';
 import 'package:afk_redeem/ui/components/help_button.dart';
-import 'package:afk_redeem/ui/components/loader_overlay.dart';
 import 'package:afk_redeem/ui/image_manager.dart';
 import 'package:afk_redeem/ui/appearance_manager.dart';
 import 'package:afk_redeem/ui/components/redemption_code_card.dart';
 import 'package:afk_redeem/ui/components/app_builder.dart';
-import 'package:afk_redeem/ui/components/redemption_summary_dialog.dart';
-import 'package:afk_redeem/ui/components/error_dialog.dart';
+import 'package:afk_redeem/ui/components/first_connection_error_dialog.dart';
 import 'package:afk_redeem/ui/components/drawer_links.dart';
 import 'package:afk_redeem/ui/components/redeem_dialog.dart';
 import 'package:afk_redeem/ui/components/snow_animation.dart';
@@ -45,12 +42,6 @@ class _MainScreenState extends State<MainScreen>
     notifyNewerVersionHandler: notifyNewerVersion,
     applyThemeHandler: applyTheme,
   );
-  late RedeemHandlers _redeemHandlers = RedeemHandlers(
-    redeemRunningHandler: _redeemRunning,
-    accountSelectionHandler: _redeemSelectAccount,
-    redeemCompletedHandler: _redeemCompleted,
-    userErrorHandler: _redeemError,
-  );
   RefreshController _refreshController = RefreshController(
       initialRefresh: false); // refreshing manually after checking disclosure
   TextEditingController _userIdController =
@@ -66,7 +57,6 @@ class _MainScreenState extends State<MainScreen>
   );
   double _brutusHeight = BASE_BRUTUS_HEIGHT;
   GlobalKey _brutusKey = GlobalObjectKey('brutus');
-  bool _isRedeemingSelectedCodes = true;
 
   @override
   void initState() {
@@ -237,43 +227,11 @@ class _MainScreenState extends State<MainScreen>
     }
   }
 
-  void _redeemRunning() {
-    LoaderOverlay.show(context);
-  }
-
-  void _redeemSelectAccount(List<AccountInfo> accounts) {
-    LoaderOverlay.hide();
-    showDialog<String>(
-      context: context,
-      builder: (_) => RedeemDialog.selectAccount(context, accounts),
-    );
-  }
-
   void _redeemCompleted(List<AccountRedeemSummary> accountRedeemSummaries) {
-    LoaderOverlay.hide();
     setState(() {
       _selectedRedemptionCodes.clear();
       Preferences().updateRedeemedCodes(accountRedeemSummaries[0].allCodes);
     });
-    showDialog<String>(
-      context: context,
-      builder: (_) => redemptionSummaryDialog(
-        context,
-        _isRedeemingSelectedCodes,
-        accountRedeemSummaries,
-      ),
-    );
-  }
-
-  void _redeemError(UserMessage errorMessage) async {
-    LoaderOverlay.hide();
-    setState(() {
-      _selectedRedemptionCodes.clear();
-    });
-    await showDialog<String>(
-      context: context,
-      builder: (_) => errorDialog(context, errorMessage),
-    );
   }
 
   Future<void> _notifyMissingUserId(BuildContext context) async {
@@ -292,20 +250,15 @@ class _MainScreenState extends State<MainScreen>
       _notifyMissingUserId(context);
       return;
     }
-    _isRedeemingSelectedCodes = true;
-    AlertDialog? redeemDialog = await RedeemDialog.codes(
-      context,
-      _afkRedeemApi,
-      _userIdController.text,
-      _selectedRedemptionCodes,
-      _redeemHandlers,
+    showDialog<String>(
+      context: context,
+      builder: (_) => RedeemDialog(
+        afkRedeemApi: _afkRedeemApi,
+        userId: _userIdController.text,
+        redeemCompletedHandler: _redeemCompleted,
+        redemptionCodes: _selectedRedemptionCodes,
+      ),
     );
-    if (redeemDialog != null) {
-      showDialog<String>(
-        context: context,
-        builder: (_) => redeemDialog,
-      );
-    }
   }
 
   bool redemptionCodeSelected(RedemptionCode redemptionCode,
@@ -610,22 +563,17 @@ class _MainScreenState extends State<MainScreen>
                                 _notifyMissingUserId(context);
                                 return;
                               }
-                              _isRedeemingSelectedCodes = false;
                               ClipboardData? clipboardData =
                                   await Clipboard.getData(Clipboard.kTextPlain);
-                              AlertDialog? redeemDialog =
-                                  await RedeemDialog.manualCode(
-                                      context,
-                                      _afkRedeemApi,
-                                      _userIdController.text,
-                                      clipboardData,
-                                      _redeemHandlers);
-                              if (redeemDialog != null) {
-                                showDialog<String>(
-                                  context: context,
-                                  builder: (_) => redeemDialog,
-                                );
-                              }
+                              showDialog(
+                                context: context,
+                                builder: (_) => RedeemDialog(
+                                  afkRedeemApi: _afkRedeemApi,
+                                  userId: _userIdController.text,
+                                  redeemCompletedHandler: _redeemCompleted,
+                                  clipboardData: clipboardData,
+                                ),
+                              );
                             },
                             onLongPress: () {
                               HapticFeedback.vibrate();

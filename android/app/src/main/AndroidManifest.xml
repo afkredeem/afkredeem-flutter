@@ -3,6 +3,7 @@
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
    <application
+        android:name="androidx.multidex.MultiDexApplication"
         android:label="AFK Redeem"
         android:icon="@mipmap/ic_launcher">
         <activity
@@ -42,5 +43,8 @@
        <meta-data
            android:name="com.google.firebase.messaging.default_notification_icon"
            android:resource="@mipmap/ic_stat_ic_notification" />
-    </application>
+       <meta-data
+           android:name="com.google.android.gms.ads.APPLICATION_ID"
+           android:value="ca-app-pub-7888384607520581~2817009769"/>
+   </application>
 </manifest>

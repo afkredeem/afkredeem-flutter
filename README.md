@@ -73,7 +73,7 @@ Since both Android & iOS provide means to silence / mute any app's notifications
 
 ## Analytics & Crashlytics
 The app uses [Firebase Analytics][firebase-analytics] and [Firebase Crashlytics][firebase-crashlytics] services.\
-As far as analytics go, only the most basic default analytics firebase has to offer are (anonymously) collected.\
+As far as analytics go, only redeem & ad events are (anonymously) logged on top of the most basic default analytics firebase has to offer.\
 With regards to crashlytics, any error / crash the app experiences is anonymously reported via firebase.\
 Nevertheless, the app presents a disclosure dialog on first startup summarizing the above information with a link to this repo.
 
@@ -83,8 +83,9 @@ Any imaginable expense (from the [afkredeem.com][afk-redeem] domain, through app
 Which brings us to the next point.
 
 ## Ads
-Currently there aren't any, but the plan is to add a banner after successful redemption to cover (perhaps) some of the expenses mentioned above, as well as ongoing ones (Jesus Apple!).\
-Also, if future funds will allow it perhaps an automated notification server can be implemented & deployed in a cloud env.
+An ad banner is displayed while the app is redeeming codes. Ads are configured to be non personalized and use a static keywords list (see [consts.dart]).
+The humble ads income, helps covering the initial expenses mentioned above, maintaining the app's services, covering ongoing expenses (Jesus apple).
+Moreover, if future funds will allow it perhaps an automated notification server can be implemented & deployed in a cloud env.
 
 ## Community Engagement
 The more the merrier
@@ -96,7 +97,9 @@ Please refer to the [issues] section to review or submit any feature request or 
 
 ----
 
-[![afkredeem.com](README.images/globe.png)][afk-redeem]&nbsp; [![reddit](README.images/reddit.png)][reddit-account]&nbsp; [![email](README.images/email.png)][email]
+[![afkredeem.com](README.images/globe.png)][afk-redeem]&nbsp;
+[![reddit](README.images/reddit.png)][reddit-account]&nbsp;
+[![email](README.images/email.png)][email]
 
 #### Disclosure
 AFK Redeem is a fan-app and is not affiliated with Lilith Games in any way.
@@ -113,4 +116,5 @@ AFK Redeem is a fan-app and is not affiliated with Lilith Games in any way.
 [license]: LICENSE.md
 [afk_redeem_api.dart]: lib/data/services/afk_redeem_api.dart
 [code_redeemer.dart]: lib/data/services/code_redeemer.dart
+[consts.dart]: lib/data/consts.dart
 [issues]: https://github.com/afkredeem/afkredeem-flutter/issues

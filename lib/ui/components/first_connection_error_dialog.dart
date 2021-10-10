@@ -3,21 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'package:afk_redeem/data/consts.dart';
-import 'package:afk_redeem/data/user_message.dart';
 import 'package:afk_redeem/ui/appearance_manager.dart';
-
-AlertDialog errorDialog(BuildContext context, UserMessage errorMessage) {
-  return AlertDialog(
-    title: Text(
-      'Error',
-      style: TextStyle(color: AppearanceManager().color.red),
-    ),
-    content: Text(
-      AppearanceManager().userMessages[errorMessage]!,
-      style: Theme.of(context).textTheme.bodyText1,
-    ),
-  );
-}
 
 AlertDialog firstConnectionErrorDialog(BuildContext context) {
   return AlertDialog(

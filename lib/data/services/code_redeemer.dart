@@ -7,7 +7,7 @@ import 'package:afk_redeem/data/redemption_code.dart';
 import 'package:afk_redeem/data/user_message.dart';
 import 'package:afk_redeem/data/json_reader.dart';
 import 'package:afk_redeem/data/error_reporter.dart';
-import 'package:afk_redeem/data/user_redeem_summary.dart';
+import 'package:afk_redeem/data/account_redeem_summary.dart';
 
 enum AccountRedeemStrategy {
   mainAccount,
@@ -17,12 +17,14 @@ enum AccountRedeemStrategy {
 
 class RedeemHandlers {
   Function() redeemRunningHandler;
+  Function(int) progressHandler;
   Function(List<AccountInfo> accounts) accountSelectionHandler;
   RedeemSummaryFunction redeemCompletedHandler;
   UserErrorHandler userErrorHandler;
 
   RedeemHandlers({
     required this.redeemRunningHandler,
+    required this.progressHandler,
     required this.accountSelectionHandler,
     required this.redeemCompletedHandler,
     required this.userErrorHandler,
@@ -30,14 +32,18 @@ class RedeemHandlers {
 }
 
 class CodeRedeemer {
+  static const int kInitRequests = 2;
   String uid;
   AccountRedeemStrategy accountRedeemStrategy;
   String verificationCode;
   Set<RedemptionCode> redemptionCodes;
   RedeemHandlers handlers;
-  late JsonReader accountsJsonReader;
+  int totalRequests;
+  int requestsCompleted = 0;
+  int progress = 0;
   Dio _dio = Dio();
   CookieJar _cookieJar = CookieJar();
+  late JsonReader accountsJsonReader;
 
   CodeRedeemer({
     required this.uid,
@@ -45,7 +51,7 @@ class CodeRedeemer {
     required this.verificationCode,
     required this.redemptionCodes,
     required this.handlers,
-  }) {
+  }) : totalRequests = kInitRequests + redemptionCodes.length {
     _dio.interceptors.add(CookieManager(_cookieJar));
     _dio.options.connectTimeout = kConnectTimeoutMilli;
     _dio.options.receiveTimeout = kReceiveTimeoutMilli;
@@ -138,6 +144,9 @@ class CodeRedeemer {
     if ((accountsJsonReader.read('info') ?? 'not-ok') == 'ok') {
       List<dynamic> users =
           accountsJsonReader.readFrom(accountsJsonReader.read('data'), 'users');
+      if (accountRedeemStrategy == AccountRedeemStrategy.allAccounts) {
+        totalRequests += (users.length - 1) * redemptionCodes.length;
+      }
       for (Map<String, dynamic> user in users) {
         AccountInfo account = AccountInfo(
           accountsJsonReader.readFrom(user, 'uid'),
@@ -224,8 +233,8 @@ class CodeRedeemer {
   }
 
   Future<Response> _sendRequest(String uri,
-      {String? postData, Map<String, dynamic>? queryParameters}) {
-    return _dio.post(
+      {String? postData, Map<String, dynamic>? queryParameters}) async {
+    Response response = await _dio.post(
       '${kLinks.lilithRedeemHost}$uri',
       data: postData,
       queryParameters: queryParameters,
@@ -253,5 +262,12 @@ class CodeRedeemer {
         },
       ),
     );
+    requestsCompleted++;
+    // prevent progress from decreasing due to totalRequests update
+    if ((100 * requestsCompleted / totalRequests).round() > progress) {
+      progress = (100 * requestsCompleted / totalRequests).round();
+    }
+    handlers.progressHandler(progress);
+    return response;
   }
 }

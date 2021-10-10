@@ -17,7 +17,7 @@ class HtmlRenderer {
     required AfkRedeemApi afkRedeemApi,
     bool? showLoadingOverlay,
   }) async {
-    showLoadingOverlay ??= true;
+    showLoadingOverlay ??= false;
     if (showLoadingOverlay) {
       LoaderOverlay.show(context);
     }
