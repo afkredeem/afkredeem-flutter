@@ -472,22 +472,41 @@ class _MainScreenState extends State<MainScreen>
                                   Padding(
                                     padding:
                                         const EdgeInsets.only(bottom: 10.0),
-                                    child: GestureDetector(
-                                      onTap: () async {
-                                        AlertDialog _aboutDialog =
-                                            await aboutDialog(
-                                                context, _afkRedeemApi);
-                                        showDialog<String>(
-                                          context: context,
-                                          builder: (_) => _aboutDialog,
-                                        );
-                                      },
-                                      child: Text(
-                                        'about',
-                                        style: TextStyle(
-                                            color:
-                                                AppearanceManager().color.main),
-                                      ),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        GestureDetector(
+                                          onTap: () async {
+                                            launch(kLinks.buyMeCoffee);
+                                          },
+                                          child: Text(
+                                            'buy me ☕',
+                                            style: TextStyle(
+                                                color: AppearanceManager()
+                                                    .color
+                                                    .main),
+                                          ),
+                                        ),
+                                        GestureDetector(
+                                          onTap: () async {
+                                            AlertDialog _aboutDialog =
+                                                await aboutDialog(
+                                                    context, _afkRedeemApi);
+                                            showDialog<String>(
+                                              context: context,
+                                              builder: (_) => _aboutDialog,
+                                            );
+                                          },
+                                          child: Text(
+                                            'about 🙋🏽‍♂️',
+                                            style: TextStyle(
+                                                color: AppearanceManager()
+                                                    .color
+                                                    .main),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ],

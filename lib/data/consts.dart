@@ -42,6 +42,8 @@ mixin kLinks {
   static const String _lilithRedeem = 'https://cdkey.lilith.com/';
   static const String lilithReferer = 'https://cdkey.lilith.com/afk-global';
 
+  static const String buyMeCoffee = 'https://buymeacoffee.com/afkredeem';
+
   static const String afkRedeem = 'https://afkredeem.com/';
   static const String githubProject =
       'https://github.com/afkredeem/afkredeem-flutter';
