@@ -1,4 +1,6 @@
 import 'package:afk_redeem/data/consts.dart';
+import 'package:afk_redeem/data/services/afk_redeem_api.dart';
+import 'package:afk_redeem/ui/components/html_renderer.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -6,6 +8,9 @@ import 'package:afk_redeem/ui/appearance_manager.dart';
 import 'package:afk_redeem/ui/image_manager.dart';
 
 class DrawerLinks extends StatelessWidget {
+  final AfkRedeemApi afkRedeemApi;
+  DrawerLinks(this.afkRedeemApi);
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -67,6 +72,23 @@ class DrawerLinks extends StatelessWidget {
               splashColor: AppearanceManager().color.mainBright,
             ),
           ),
+          FutureBuilder<String?>(
+              future: HtmlRenderer.getHtml(
+                context: context,
+                uri: kFlutterHtmlUri.drawer,
+                afkRedeemApi: afkRedeemApi,
+              ),
+              builder: (BuildContext context, AsyncSnapshot<String?> snapshot) {
+                if (!snapshot.hasData || snapshot.data == null) {
+                  return Container();
+                }
+                Widget? htmlWidget =
+                    HtmlRenderer.tryRender(context, snapshot.data);
+                if (htmlWidget == null) {
+                  return Container();
+                }
+                return htmlWidget;
+              }),
         ],
       ),
     );

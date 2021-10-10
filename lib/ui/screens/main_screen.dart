@@ -468,7 +468,7 @@ class _MainScreenState extends State<MainScreen>
                                       ),
                                     ],
                                   ),
-                                  DrawerLinks(),
+                                  DrawerLinks(_afkRedeemApi),
                                   Padding(
                                     padding:
                                         const EdgeInsets.only(bottom: 10.0),

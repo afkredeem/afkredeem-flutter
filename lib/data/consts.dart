@@ -84,6 +84,7 @@ mixin kUris {
 }
 
 mixin kFlutterHtmlUri {
+  static const String drawer = 'flutter_html/general/drawer.html';
   static const String about = 'flutter_html/general/about.html';
   static const String redeemNotSupported =
       'flutter_html/general/redeem_not_supported.html';
