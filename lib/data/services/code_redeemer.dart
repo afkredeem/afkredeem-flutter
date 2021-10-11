@@ -221,7 +221,11 @@ class CodeRedeemer {
           accountRedeemSummary.notFoundCodes.add(redemptionCode);
           break;
         case 'err_cdkey_expired':
-          accountRedeemSummary.expiredCodes.add(redemptionCode);
+          if (redemptionCode.isExpired) {
+            accountRedeemSummary.knownExpiredCodes.add(redemptionCode);
+          } else {
+            accountRedeemSummary.expiredCodes.add(redemptionCode);
+          }
           break;
         default:
           throw JsonReaderException(

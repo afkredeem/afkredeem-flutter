@@ -30,12 +30,13 @@ class RedemptionCodeCard extends StatelessWidget {
     if (ImageManager().contains('gifts/$giftKey')) {
       if (giftKey == 'diamonds' &&
           commonScrollForceChristmasCounter ==
-              kCommonScrollForceChristmasValue) {
+              kCommonScrollForceChristmasValue &&
+          !Preferences().forceChristmasTheme) {
         Preferences().forceChristmasTheme = true;
         applyThemeHandler();
         ScaffoldMessenger.of(context)
             .showSnackBar(AppearanceManager().snackBarStr(
-          "🎅🏽🎅🏽🎅🏽   Christmas Forever   🎅🏽🎅🏽🎅🏽",
+          "🎅🏽🎅🏽🎅🏽   Christmas Forever!   🎅🏽🎅🏽🎅🏽",
           duration: Duration(seconds: 3),
         ));
       }
@@ -83,7 +84,9 @@ class RedemptionCodeCard extends StatelessWidget {
                             Transform.scale(
                               scale: 2,
                               child: Checkbox(
-                                activeColor: AppearanceManager().color.main,
+                                activeColor: redemptionCode.isExpired
+                                    ? AppearanceManager().color.mainBright
+                                    : AppearanceManager().color.main,
                                 checkColor:
                                     AppearanceManager().color.background,
                                 value: selected(),
@@ -156,6 +159,57 @@ class RedemptionCodeCard extends StatelessWidget {
                                     ),
                                   ),
                                 ),
+                                if (redemptionCode.isExpired &&
+                                    redemptionCode.isActive)
+                                  Positioned(
+                                    top: 3,
+                                    left: 10,
+                                    child: RotationTransition(
+                                      turns: AlwaysStoppedAnimation(15 / 360),
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            AppearanceManager().snackBarStr(
+                                              'Expired on ${DateFormat('MMM d').format(redemptionCode.expiresAt!)}',
+                                              duration: Duration(seconds: 3),
+                                            ),
+                                          );
+                                        },
+                                        child: Container(
+                                          alignment: Alignment.bottomCenter,
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.rectangle,
+                                            borderRadius:
+                                                BorderRadius.circular(3),
+                                            color: AppearanceManager()
+                                                .color
+                                                .expiredLabel,
+                                          ),
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                              vertical: 1.0,
+                                              horizontal: 6.0,
+                                            ),
+                                            child: Text(
+                                              'EXPIRED',
+                                              style: TextStyle(
+                                                color: selected()
+                                                    ? AppearanceManager()
+                                                        .color
+                                                        .mainBright
+                                                    : AppearanceManager()
+                                                        .color
+                                                        .main,
+                                                fontSize: 12.0,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
                               ],
                             ),
                           ],

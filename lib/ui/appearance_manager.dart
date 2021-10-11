@@ -55,6 +55,7 @@ class AppearanceManager {
           dateText: Color(0xFF979797),
           disabled: Color(0xFF727272),
           appBarText: Color(0xFFFFFFFF),
+          expiredLabel: Color(0xFF3D3D3D),
           textFieldHiddenBorder: Color(0xFF000000),
           background: Color(0xFF140D1F),
           appBackgroundBlend: Color(0xFF4B4B4B),
@@ -83,6 +84,7 @@ class AppearanceManager {
           dateText: Color(0xFF5E5E5E),
           disabled: Color(0xFF727272),
           appBarText: Color(0xFF131313),
+          expiredLabel: Color(0xFF767676),
           textFieldHiddenBorder: Color(0xFFFFFFFF),
           background: Color(0xFFFFFEFB),
           appBackgroundBlend: Color(0xFFFFFFFF),
@@ -111,6 +113,7 @@ class AppearanceManager {
           dateText: Color(0xFF979797),
           disabled: Color(0xFF727272),
           appBarText: Color(0xFFFFFFFF),
+          expiredLabel: Color(0xFF3D3D3D),
           textFieldHiddenBorder: Color(0xFF000000),
           background: Color(0xFF170909),
           appBackgroundBlend: Color(0xFF4B4B4B),
@@ -289,6 +292,7 @@ class ColorPalette {
   final Color dateText;
   final Color disabled;
   final Color appBarText;
+  final Color expiredLabel;
   final Color textFieldHiddenBorder;
   final Color background;
   final Color appBackgroundBlend;
@@ -315,6 +319,7 @@ class ColorPalette {
     "dateText": dateText,
     "disabled": disabled,
     "appBarText": appBarText,
+    "expiredLabel": expiredLabel,
     "textFieldHiddenBorder": textFieldHiddenBorder,
     "background": background,
     "appBackgroundBlend": appBackgroundBlend,
@@ -342,6 +347,7 @@ class ColorPalette {
       required this.dateText,
       required this.disabled,
       required this.appBarText,
+      required this.expiredLabel,
       required this.textFieldHiddenBorder,
       required this.background,
       required this.appBackgroundBlend,

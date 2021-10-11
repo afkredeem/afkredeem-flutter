@@ -20,6 +20,7 @@ class AccountRedeemSummary {
   List<RedemptionCode> usedCodes = [];
   List<RedemptionCode> notFoundCodes = [];
   List<RedemptionCode> expiredCodes = [];
+  List<RedemptionCode> knownExpiredCodes = [];
 
   AccountRedeemSummary(this.account);
 
@@ -27,7 +28,8 @@ class AccountRedeemSummary {
     return redeemedCodes.isEmpty &&
         usedCodes.isEmpty &&
         notFoundCodes.isEmpty &&
-        expiredCodes.isEmpty;
+        expiredCodes.isEmpty &&
+        knownExpiredCodes.isEmpty;
   }
 
   bool get isNotEmpty {
@@ -35,7 +37,11 @@ class AccountRedeemSummary {
   }
 
   List<RedemptionCode> get allCodes {
-    return redeemedCodes + usedCodes + notFoundCodes + expiredCodes;
+    return redeemedCodes +
+        usedCodes +
+        notFoundCodes +
+        expiredCodes +
+        knownExpiredCodes;
   }
 
   static codesListDisplayLines(List<RedemptionCode> codes) {
@@ -47,7 +53,8 @@ class AccountRedeemSummary {
     return codesListDisplayLines(redeemedCodes) +
         codesListDisplayLines(usedCodes) +
         codesListDisplayLines(notFoundCodes) +
-        codesListDisplayLines(expiredCodes);
+        codesListDisplayLines(expiredCodes) +
+        codesListDisplayLines(knownExpiredCodes);
   }
 }
 

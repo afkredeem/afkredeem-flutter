@@ -787,8 +787,11 @@ class _RedeemDialogState extends State<RedeemDialog> {
                         children: [
                           Column(
                             children: [
-                              _codesList(accountRedeemSummary.expiredCodes,
-                                  'expired', AppearanceManager().color.red),
+                              _codesList(
+                                  accountRedeemSummary.knownExpiredCodes +
+                                      accountRedeemSummary.expiredCodes,
+                                  'expired',
+                                  AppearanceManager().color.red),
                               _codesList(accountRedeemSummary.notFoundCodes,
                                   'not found', AppearanceManager().color.red),
                             ],
