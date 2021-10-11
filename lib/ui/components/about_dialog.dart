@@ -12,6 +12,7 @@ Future<AlertDialog> aboutDialog(
     context: context,
     uri: kFlutterHtmlUri.about,
     afkRedeemApi: afkRedeemApi,
+    showLoadingOverlay: true,
   );
   return AlertDialog(
     title: Text(HtmlRenderer.getTitle(html) ?? 'About'),
