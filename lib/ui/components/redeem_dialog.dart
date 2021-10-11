@@ -219,8 +219,14 @@ class _RedeemDialogState extends State<RedeemDialog> {
 
   late Widget loadingWidget = Container(
     child: Center(
-      child: CircularProgressIndicator(
-        color: AppearanceManager().color.main,
+      child: Column(
+        children: [
+          SizedBox(height: 50),
+          CircularProgressIndicator(
+            color: AppearanceManager().color.main,
+          ),
+          SizedBox(height: 50),
+        ],
       ),
     ),
   );
