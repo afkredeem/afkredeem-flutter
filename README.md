@@ -78,13 +78,13 @@ With regards to crashlytics, any error / crash the app experiences is anonymousl
 Nevertheless, the app presents a disclosure dialog on first startup summarizing the above information with a link to this repo.
 
 ## Funds
-Well, there aren't any really 😅\
+Well, there aren't any really 😅 so you're most welcome to [buy me a ☕][buy-me-coffee].\
 Any imaginable expense (from the [afkredeem.com][afk-redeem] domain, through app stores costs, to development time & effort), was personally paid for.\
 Which brings us to the next point.
 
 ## Ads
 An ad banner is displayed while the app is redeeming codes. Ads are configured to be non personalized and use a static keywords list (see [consts.dart]).
-The humble ads income, helps covering the initial expenses mentioned above, maintaining the app's services, covering ongoing expenses (Jesus apple).
+The humble ads income helps covering the initial expenses mentioned above, maintenance of the app's services, as well as ongoing expenses (WTF apple).
 Moreover, if future funds will allow it perhaps an automated notification server can be implemented & deployed in a cloud env.
 
 ## Community Engagement
@@ -97,6 +97,7 @@ Please refer to the [issues] section to review or submit any feature request or 
 
 ----
 
+[![coffee](README.images/coffee.png)][buy-me-coffee]&nbsp;
 [![afkredeem.com](README.images/globe.png)][afk-redeem]&nbsp;
 [![reddit](README.images/reddit.png)][reddit-account]&nbsp;
 [![email](README.images/email.png)][email]
@@ -110,6 +111,7 @@ AFK Redeem is a fan-app and is not affiliated with Lilith Games in any way.
 [firebase-messaging]: https://firebase.google.com/docs/cloud-messaging
 [firebase-analytics]: https://firebase.google.com/docs/analytics
 [firebase-crashlytics]: https://firebase.google.com/docs/crashlytics
+[buy-me-coffee]: https://www.buymeacoffee.com/afkredeem
 [reddit-account]: https://www.reddit.com/u/-ConanTheLibrarian-
 [email]: mailto:afkredeem@gmail.com
 
