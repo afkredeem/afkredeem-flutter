@@ -97,13 +97,3 @@ bool shouldReportDioError(DioError ex) {
   // in private limited networks (work, school, etc.)
   return ex.type != DioErrorType.connectTimeout && !(ex is HandshakeException);
 }
-
-String getAdUnitId({required String android, required String ios}) {
-  return kReleaseMode
-      ? Platform.isAndroid
-          ? android
-          : ios
-      : Platform.isAndroid
-          ? 'ca-app-pub-3940256099942544/6300978111' // test android unit id
-          : 'ca-app-pub-3940256099942544/2934735716'; // test ios unit id
-}

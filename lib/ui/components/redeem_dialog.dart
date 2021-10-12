@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:math';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
@@ -395,16 +396,16 @@ class _RedeemDialogState extends State<RedeemDialog> {
       return;
     }
     _adBannerLoadingStatus = AdLoadingStatus.loading;
+
     final BannerAd banner = BannerAd(
       size: AdSize(
         height: (0.85 * AdSize.mediumRectangle.height).round(),
         width: (0.85 * AdSize.mediumRectangle.width).round(),
       ),
       request: adRequest,
-      adUnitId: getAdUnitId(
-        android: 'ca-app-pub-7888384607520581/1024667510',
-        ios: 'ca-app-pub-7888384607520581/4701872851',
-      ),
+      adUnitId: Platform.isAndroid
+          ? 'ca-app-pub-7888384607520581/1024667510'
+          : 'ca-app-pub-7888384607520581/4701872851',
       listener: BannerAdListener(
         onAdLoaded: (Ad ad) {
           setState(() {
