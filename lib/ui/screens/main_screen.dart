@@ -46,6 +46,7 @@ class _MainScreenState extends State<MainScreen>
       initialRefresh: false); // refreshing manually after checking disclosure
   TextEditingController _userIdController =
       TextEditingController(text: Preferences().userID);
+  bool _canFetchHtmlPages = Preferences().wasDisclosureApproved;
   bool _userIdEmpty = false;
   FocusNode _userIdFocusNode = FocusNode();
   GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey();
@@ -100,6 +101,9 @@ class _MainScreenState extends State<MainScreen>
         barrierDismissible: false,
         builder: (_) => disclosureDialog(context),
       );
+      setState(() {
+        _canFetchHtmlPages = true;
+      });
     }
 
     _refreshController.requestRefresh();
@@ -468,7 +472,8 @@ class _MainScreenState extends State<MainScreen>
                                       ),
                                     ],
                                   ),
-                                  drawerLinks(context, _afkRedeemApi),
+                                  if (_canFetchHtmlPages)
+                                    drawerLinks(context, _afkRedeemApi),
                                   Padding(
                                     padding:
                                         const EdgeInsets.only(bottom: 10.0),
