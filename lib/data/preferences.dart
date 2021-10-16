@@ -15,11 +15,30 @@ class Preferences {
     return _singleton!;
   }
 
+  static const String _kIsHypogean = 'isHypogean';
+  static const String _kUserID = 'userID';
+  static const String _kShowAds = 'showAds';
+  static const String _kWasDisclosureApproved = 'wasDisclosureApproved';
+  static const String _kWasFirstConnectionSuccessful =
+      'wasFirstConnectionSuccessful';
+  static const String _kWasManualRedeemMessageShown =
+      'wasManualRedeemMessageShown';
+  static const String _kForceChristmasTheme = 'forceChristmasTheme';
+  static const String _kAppInStoreVersion = 'appInStoreVersion';
+  static const String _kRedeemApiVersion = 'redeemApiVersion';
+  static const String _kAppInStoreApiVersionSupport =
+      'appInStoreApiVersionSupport';
+  static const String _kChristmasThemeStartDate = 'christmasThemeStartDate';
+  static const String _kChristmasThemeEndDate = 'christmasThemeEndDate';
+  static const String _kAppMessageShown = 'appMessageShown';
+  static const String _kRedemptionCodes = 'redemptionCodes';
+
   SharedPreferences _prefs;
   PackageInfo _packageInfo;
 
   bool _isHypogean;
   String _userID;
+  bool _showAds;
   bool _wasDisclosureApproved;
   bool _wasFirstConnectionSuccessful;
   bool _wasManualRedeemMessageShown;
@@ -35,6 +54,7 @@ class Preferences {
 
   bool get isHypogean => _isHypogean;
   String get userID => _userID;
+  bool get showAds => _showAds;
   bool get wasDisclosureApproved => _wasDisclosureApproved;
   bool get wasFirstConnectionSuccessful => _wasFirstConnectionSuccessful;
   bool get wasManualRedeemMessageShown => _wasManualRedeemMessageShown;
@@ -47,68 +67,73 @@ class Preferences {
 
   set userID(String value) {
     _userID = value;
-    _prefs.setString('userID', value);
+    _prefs.setString(_kUserID, value);
   }
 
   set isHypogean(bool value) {
     _forceChristmasTheme = false;
     _isHypogean = value;
-    _prefs.setBool('isHypogean', value);
+    _prefs.setBool(_kIsHypogean, value);
+  }
+
+  set showAds(bool value) {
+    _showAds = value;
+    _prefs.setBool(_kShowAds, value);
   }
 
   set wasDisclosureApproved(bool value) {
     _wasDisclosureApproved = value;
-    _prefs.setBool('wasDisclosureApproved', value);
+    _prefs.setBool(_kWasDisclosureApproved, value);
   }
 
   set wasFirstConnectionSuccessful(bool value) {
     _wasFirstConnectionSuccessful = value;
-    _prefs.setBool('wasFirstConnectionSuccessful', value);
+    _prefs.setBool(_kWasFirstConnectionSuccessful, value);
   }
 
   set wasManualRedeemMessageShown(bool value) {
     _wasManualRedeemMessageShown = value;
-    _prefs.setBool('wasManualRedeemMessageShown', value);
+    _prefs.setBool(_kWasManualRedeemMessageShown, value);
   }
 
   set forceChristmasTheme(bool value) {
     _forceChristmasTheme = value;
-    _prefs.setBool('forceChristmasTheme', value);
+    _prefs.setBool(_kForceChristmasTheme, value);
   }
 
   set appInStoreVersion(int value) {
     _appInStoreVersion = value;
-    _prefs.setInt('appInStoreVersion', value);
+    _prefs.setInt(_kAppInStoreVersion, value);
   }
 
   set redeemApiVersion(int value) {
     _redeemApiVersion = value;
-    _prefs.setInt('redeemApiVersion', value);
+    _prefs.setInt(_kRedeemApiVersion, value);
   }
 
   set appInStoreApiVersionSupport(int value) {
     _appInStoreApiVersionSupport = value;
-    _prefs.setInt('appInStoreApiVersionSupport', value);
+    _prefs.setInt(_kAppInStoreApiVersionSupport, value);
   }
 
   set christmasThemeStartDate(DateTime value) {
     _christmasThemeStartDate = value;
     _prefs.setString(
-        'christmasThemeStartDate', DateFormat('yyyy-MM-dd').format(value));
+        _kChristmasThemeStartDate, DateFormat('yyyy-MM-dd').format(value));
   }
 
   set christmasThemeEndDate(DateTime value) {
     _christmasThemeEndDate = value;
     _prefs.setString(
-        'christmasThemeEndDate', DateFormat('yyyy-MM-dd').format(value));
+        _kChristmasThemeEndDate, DateFormat('yyyy-MM-dd').format(value));
   }
 
   bool wasAppMessageShown(int messageId) {
-    return _prefs.getBool('appMessageShown-$messageId') ?? false;
+    return _prefs.getBool('$_kAppMessageShown-$messageId') ?? false;
   }
 
   void setAppMessageShown(int messageId) {
-    _prefs.setBool('appMessageShown-$messageId', true);
+    _prefs.setBool('$_kAppMessageShown-$messageId', true);
   }
 
   static Future<Preferences> create() async {
@@ -123,28 +148,29 @@ class Preferences {
   }
 
   Preferences._create(this._prefs, this._packageInfo)
-      : _isHypogean = _prefs.getBool('isHypogean') ?? true,
-        _userID = _prefs.getString('userID') ?? '',
+      : _isHypogean = _prefs.getBool(_kIsHypogean) ?? true,
+        _userID = _prefs.getString(_kUserID) ?? '',
+        _showAds = _prefs.getBool(_kShowAds) ?? false,
         _wasDisclosureApproved =
-            _prefs.getBool('wasDisclosureApproved') ?? false,
+            _prefs.getBool(_kWasDisclosureApproved) ?? false,
         _wasFirstConnectionSuccessful =
-            _prefs.getBool('wasFirstConnectionSuccessful') ?? false,
+            _prefs.getBool(_kWasFirstConnectionSuccessful) ?? false,
         _wasManualRedeemMessageShown =
-            _prefs.getBool('wasManualRedeemMessageShown') ?? false,
-        _forceChristmasTheme = _prefs.getBool('forceChristmasTheme') ?? false,
+            _prefs.getBool(_kWasManualRedeemMessageShown) ?? false,
+        _forceChristmasTheme = _prefs.getBool(_kForceChristmasTheme) ?? false,
         _appInStoreVersion =
-            _prefs.getInt('appInStoreVersion') ?? kDefaultAppInStoreVersion,
+            _prefs.getInt(_kAppInStoreVersion) ?? kDefaultAppInStoreVersion,
         _redeemApiVersion =
-            _prefs.getInt('redeemApiVersion') ?? kDefaultRedeemApiVersion,
+            _prefs.getInt(_kRedeemApiVersion) ?? kDefaultRedeemApiVersion,
         _appInStoreApiVersionSupport =
-            _prefs.getInt('appInStoreApiVersionSupport') ??
+            _prefs.getInt(_kAppInStoreApiVersionSupport) ??
                 kDefaultAppInStoreApiVersionSupport,
         _christmasThemeStartDate = DateTime.parse(
-            _prefs.getString('christmasThemeStartDate') ?? '2222-01-01'),
+            _prefs.getString(_kChristmasThemeStartDate) ?? '2222-01-01'),
         _christmasThemeEndDate = DateTime.parse(
-            _prefs.getString('christmasThemeEndDate') ?? '2222-01-01'),
+            _prefs.getString(_kChristmasThemeEndDate) ?? '2222-01-01'),
         redemptionCodes =
-            _codesFromJsonString(_prefs.getString('redemptionCodes')),
+            _codesFromJsonString(_prefs.getString(_kRedemptionCodes)),
         redemptionCodesMap = {} {
     if (wasAppMessageShown(kManualRedeemApiBrutusMessageId)) {
       // old user has seen manual redeem message when it was an api brutus message
@@ -170,6 +196,7 @@ class Preferences {
       context: 'Preferences::updateConfigData',
       json: configData,
     );
+    showAds = jsonReader.read('showAds');
     redeemApiVersion = jsonReader.read('redeemApiVersion');
     if (Platform.isAndroid) {
       appInStoreVersion = jsonReader.read('androidStoreAppVersion');
@@ -233,7 +260,7 @@ class Preferences {
     }
     // sort by isActive & date
     redemptionCodes.sort();
-    _prefs.setString('redemptionCodes', _codesToJsonString(redemptionCodes));
+    _prefs.setString(_kRedemptionCodes, _codesToJsonString(redemptionCodes));
   }
 
   static List<RedemptionCode> _codesFromJsonString(String? codesJsonString) {

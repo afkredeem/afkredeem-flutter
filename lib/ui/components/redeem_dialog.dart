@@ -30,6 +30,7 @@ enum RedeemDialogState {
 }
 
 enum AdLoadingStatus {
+  dontShowAds,
   init,
   loading,
   success,
@@ -70,7 +71,9 @@ class _RedeemDialogState extends State<RedeemDialog> {
     nonPersonalizedAds: true,
   );
   BannerAd? _adBanner;
-  AdLoadingStatus _adBannerLoadingStatus = AdLoadingStatus.init;
+  late AdLoadingStatus _adBannerLoadingStatus = Preferences().showAds
+      ? AdLoadingStatus.init
+      : AdLoadingStatus.dontShowAds;
   late Widget _adWidget = _createAdWidget();
 
   late bool isManualRedeem = widget.redemptionCodes == null;
@@ -392,9 +395,14 @@ class _RedeemDialogState extends State<RedeemDialog> {
   }
 
   Future<void> _createAnchoredBanner(BuildContext context) async {
-    if (_adBannerLoadingStatus == AdLoadingStatus.loading) {
+    if (_adBannerLoadingStatus == AdLoadingStatus.dontShowAds) {
+      print('not showing ads');
+    }
+    if (_adBannerLoadingStatus == AdLoadingStatus.dontShowAds ||
+        _adBannerLoadingStatus == AdLoadingStatus.loading) {
       return;
     }
+    print('loading ad');
     _adBannerLoadingStatus = AdLoadingStatus.loading;
 
     final BannerAd banner = BannerAd(
