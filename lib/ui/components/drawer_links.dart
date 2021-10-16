@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
-
 import 'package:afk_redeem/data/consts.dart';
-import 'package:afk_redeem/data/services/afk_redeem_api.dart';
 import 'package:afk_redeem/ui/components/html_renderer.dart';
 import 'package:afk_redeem/ui/appearance_manager.dart';
 import 'package:afk_redeem/ui/image_manager.dart';
 
-Widget drawerLinks(BuildContext context, AfkRedeemApi afkRedeemApi) {
+Widget drawerLinks(BuildContext context, Future<String?> drawerHtml) {
   return Padding(
     padding: const EdgeInsets.symmetric(vertical: 10.0),
     child: Column(
@@ -68,11 +66,7 @@ Widget drawerLinks(BuildContext context, AfkRedeemApi afkRedeemApi) {
           ),
         ),
         FutureBuilder<String?>(
-            future: HtmlRenderer.getHtml(
-              context: context,
-              uri: kFlutterHtmlUri.drawer,
-              afkRedeemApi: afkRedeemApi,
-            ),
+            future: drawerHtml,
             builder: (BuildContext context, AsyncSnapshot<String?> snapshot) {
               if (!snapshot.hasData || snapshot.data == null) {
                 return Container();
