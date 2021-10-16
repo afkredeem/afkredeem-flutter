@@ -244,7 +244,7 @@ class _MainScreenState extends State<MainScreen>
     Duration duration = Duration(milliseconds: 1200);
     ScaffoldMessenger.of(context).showSnackBar(
       AppearanceManager()
-          .errorSnackBar(UserMessage.missingUserId, duration: duration),
+          .snackBar(UserMessage.missingUserId, duration: duration),
     );
     await Future.delayed(duration);
     _scaffoldKey.currentState?.openDrawer();
