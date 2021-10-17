@@ -65,6 +65,14 @@ class RedemptionCodeCard extends StatelessWidget {
       behavior: HitTestBehavior.translucent,
       onTap: () {
         selected(toggle: true);
+        if (!redemptionCode.isActive) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            AppearanceManager().snackBarStr(
+              'Expired on ${DateFormat('MMM d, yyyy').format(redemptionCode.expiresAt!)}',
+              duration: Duration(seconds: 2),
+            ),
+          );
+        }
       },
       child: Container(
         child: Padding(
@@ -171,8 +179,8 @@ class RedemptionCodeCard extends StatelessWidget {
                                           ScaffoldMessenger.of(context)
                                               .showSnackBar(
                                             AppearanceManager().snackBarStr(
-                                              'Expired on ${DateFormat('MMM d').format(redemptionCode.expiresAt!)}',
-                                              duration: Duration(seconds: 3),
+                                              'Expired on ${DateFormat('MMM d, yyyy').format(redemptionCode.expiresAt!)}',
+                                              duration: Duration(seconds: 2),
                                             ),
                                           );
                                         },
