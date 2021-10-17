@@ -64,6 +64,7 @@ class _MainScreenState extends State<MainScreen>
     uri: kFlutterHtmlUri.drawer,
     afkRedeemApi: _afkRedeemApi,
   );
+  bool newerVersionMessageShown = false;
 
   @override
   void initState() {
@@ -126,6 +127,10 @@ class _MainScreenState extends State<MainScreen>
   }
 
   void notifyNewerVersion() {
+    if (newerVersionMessageShown) {
+      return;
+    }
+    newerVersionMessageShown = true;
     showBrutusMessage(
       '',
       duration: Duration(seconds: 4),
@@ -153,7 +158,7 @@ class _MainScreenState extends State<MainScreen>
                 },
             ),
             TextSpan(
-              text: ' of this app - just Saying 😅',
+              text: ' of this app - just saying 😅',
               style: TextStyle(
                 fontSize: 16.0,
                 color: AppearanceManager().color.snackBarText,
