@@ -81,7 +81,7 @@ class Preferences {
   }
 
   set isHypogean(bool value) {
-    _forceChristmasTheme = false;
+    forceChristmasTheme = false;
     _isHypogean = value;
     _prefs.setBool(_kIsHypogean, value);
   }
