@@ -78,7 +78,8 @@ With regards to crashlytics, any error / crash the app experiences is anonymousl
 Nevertheless, the app presents a disclosure dialog on first startup summarizing the above information with a link to this repo.
 
 ## Funds
-Well, there aren't any really 😅<!--- so you're most welcome to [buy me a ☕][buy-me-coffee]. --->\
+<!--- so you're most welcome to [buy me a ☕][buy-me-coffee]. --->
+Well, there aren't any really 😅\
 Any imaginable expense (from the [afkredeem.com][afk-redeem] domain, through app stores costs, to development time & effort), was personally paid for.\
 Which brings us to the next point.
 
