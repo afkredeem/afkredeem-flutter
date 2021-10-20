@@ -15,9 +15,12 @@ class Preferences {
     return _singleton!;
   }
 
+  static const String _kDateFormat = 'yyyy-MM-dd';
+  static const String _kDefaultDate = '2222-01-01';
   static const String _kIsHypogean = 'isHypogean';
   static const String _kUserID = 'userID';
   static const String _kShowAds = 'showAds';
+  static const String _kShowBuyMeCoffeeLink = 'showBuyMeCoffeeLink';
   static const String _kWasDisclosureApproved = 'wasDisclosureApproved';
   static const String _kWasFirstConnectionSuccessful =
       'wasFirstConnectionSuccessful';
@@ -25,9 +28,14 @@ class Preferences {
       'wasManualRedeemMessageShown';
   static const String _kForceChristmasTheme = 'forceChristmasTheme';
   static const String _kAppInStoreVersion = 'appInStoreVersion';
+  static const String _kAndroidStoreAppVersion = 'androidStoreAppVersion';
+  static const String _kIosStoreAppVersion = 'iosStoreAppVersion';
   static const String _kRedeemApiVersion = 'redeemApiVersion';
   static const String _kAppInStoreApiVersionSupport =
       'appInStoreApiVersionSupport';
+  static const String _kAndroidAppApiVersionSupport =
+      'androidAppApiVersionSupport';
+  static const String _kIosAppApiVersionSupport = 'iosAppApiVersionSupport';
   static const String _kChristmasThemeStartDate = 'christmasThemeStartDate';
   static const String _kChristmasThemeEndDate = 'christmasThemeEndDate';
   static const String _kAppMessageShown = 'appMessageShown';
@@ -39,6 +47,7 @@ class Preferences {
   bool _isHypogean;
   String _userID;
   bool _showAds;
+  bool _showBuyMeCoffeeLink;
   bool _wasDisclosureApproved;
   bool _wasFirstConnectionSuccessful;
   bool _wasManualRedeemMessageShown;
@@ -55,6 +64,7 @@ class Preferences {
   bool get isHypogean => _isHypogean;
   String get userID => _userID;
   bool get showAds => _showAds;
+  bool get showBuyMeCoffeeLink => _showBuyMeCoffeeLink;
   bool get wasDisclosureApproved => _wasDisclosureApproved;
   bool get wasFirstConnectionSuccessful => _wasFirstConnectionSuccessful;
   bool get wasManualRedeemMessageShown => _wasManualRedeemMessageShown;
@@ -79,6 +89,11 @@ class Preferences {
   set showAds(bool value) {
     _showAds = value;
     _prefs.setBool(_kShowAds, value);
+  }
+
+  set showBuyMeCoffeeLink(bool value) {
+    _showBuyMeCoffeeLink = value;
+    _prefs.setBool(_kShowBuyMeCoffeeLink, value);
   }
 
   set wasDisclosureApproved(bool value) {
@@ -119,13 +134,13 @@ class Preferences {
   set christmasThemeStartDate(DateTime value) {
     _christmasThemeStartDate = value;
     _prefs.setString(
-        _kChristmasThemeStartDate, DateFormat('yyyy-MM-dd').format(value));
+        _kChristmasThemeStartDate, DateFormat(_kDateFormat).format(value));
   }
 
   set christmasThemeEndDate(DateTime value) {
     _christmasThemeEndDate = value;
     _prefs.setString(
-        _kChristmasThemeEndDate, DateFormat('yyyy-MM-dd').format(value));
+        _kChristmasThemeEndDate, DateFormat(_kDateFormat).format(value));
   }
 
   bool wasAppMessageShown(int messageId) {
@@ -151,6 +166,7 @@ class Preferences {
       : _isHypogean = _prefs.getBool(_kIsHypogean) ?? true,
         _userID = _prefs.getString(_kUserID) ?? '',
         _showAds = _prefs.getBool(_kShowAds) ?? false,
+        _showBuyMeCoffeeLink = _prefs.getBool(_kShowBuyMeCoffeeLink) ?? false,
         _wasDisclosureApproved =
             _prefs.getBool(_kWasDisclosureApproved) ?? false,
         _wasFirstConnectionSuccessful =
@@ -166,9 +182,9 @@ class Preferences {
             _prefs.getInt(_kAppInStoreApiVersionSupport) ??
                 kDefaultAppInStoreApiVersionSupport,
         _christmasThemeStartDate = DateTime.parse(
-            _prefs.getString(_kChristmasThemeStartDate) ?? '2222-01-01'),
+            _prefs.getString(_kChristmasThemeStartDate) ?? _kDefaultDate),
         _christmasThemeEndDate = DateTime.parse(
-            _prefs.getString(_kChristmasThemeEndDate) ?? '2222-01-01'),
+            _prefs.getString(_kChristmasThemeEndDate) ?? _kDefaultDate),
         redemptionCodes =
             _codesFromJsonString(_prefs.getString(_kRedemptionCodes)),
         redemptionCodesMap = {} {
@@ -196,23 +212,24 @@ class Preferences {
       context: 'Preferences::updateConfigData',
       json: configData,
     );
-    showAds = jsonReader.read('showAds');
-    redeemApiVersion = jsonReader.read('redeemApiVersion');
+    showAds = jsonReader.read(_kShowAds);
+    showBuyMeCoffeeLink = jsonReader.read(_kShowBuyMeCoffeeLink);
+    redeemApiVersion = jsonReader.read(_kRedeemApiVersion);
     if (Platform.isAndroid) {
-      appInStoreVersion = jsonReader.read('androidStoreAppVersion');
+      appInStoreVersion = jsonReader.read(_kAndroidStoreAppVersion);
       appInStoreApiVersionSupport =
-          jsonReader.read('androidAppApiVersionSupport');
+          jsonReader.read(_kAndroidAppApiVersionSupport);
     } else if (Platform.isIOS) {
-      appInStoreVersion = jsonReader.read('iosStoreAppVersion');
-      appInStoreApiVersionSupport = jsonReader.read('iosAppApiVersionSupport');
+      appInStoreVersion = jsonReader.read(_kIosStoreAppVersion);
+      appInStoreApiVersionSupport = jsonReader.read(_kIosAppApiVersionSupport);
     } else {
       throw Exception('Unsupported platform for api version config data');
     }
     bool wasChristmasTime = isChristmasTime;
     christmasThemeStartDate =
-        DateTime.parse(jsonReader.read('christmasThemeStartDate'));
+        DateTime.parse(jsonReader.read(_kChristmasThemeStartDate));
     christmasThemeEndDate =
-        DateTime.parse(jsonReader.read('christmasThemeEndDate'));
+        DateTime.parse(jsonReader.read(_kChristmasThemeEndDate));
     if (wasChristmasTime != isChristmasTime) {
       applyThemeHandler(); // christmas changed
     }
@@ -240,7 +257,7 @@ class Preferences {
     for (RedemptionCode redeemedCode in redeemed) {
       redemptionCodesMap[redeemedCode.code]?.wasRedeemed = true;
     }
-    _prefs.setString('redemptionCodes', _codesToJsonString(redemptionCodes));
+    _prefs.setString(_kRedemptionCodes, _codesToJsonString(redemptionCodes));
   }
 
   void updateCodesFromExternalSource({

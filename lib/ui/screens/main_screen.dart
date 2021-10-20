@@ -492,18 +492,19 @@ class _MainScreenState extends State<MainScreen>
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceEvenly,
                                       children: [
-                                        GestureDetector(
-                                          onTap: () async {
-                                            launch(kLinks.buyMeCoffee);
-                                          },
-                                          child: Text(
-                                            'buy me ☕',
-                                            style: TextStyle(
-                                                color: AppearanceManager()
-                                                    .color
-                                                    .main),
+                                        if (Preferences().showBuyMeCoffeeLink)
+                                          GestureDetector(
+                                            onTap: () async {
+                                              launch(kLinks.buyMeCoffee);
+                                            },
+                                            child: Text(
+                                              'buy me ☕',
+                                              style: TextStyle(
+                                                  color: AppearanceManager()
+                                                      .color
+                                                      .main),
+                                            ),
                                           ),
-                                        ),
                                         GestureDetector(
                                           onTap: () async {
                                             AlertDialog _aboutDialog =
@@ -515,7 +516,9 @@ class _MainScreenState extends State<MainScreen>
                                             );
                                           },
                                           child: Text(
-                                            'about 🙋🏽‍♂️',
+                                            Preferences().showBuyMeCoffeeLink
+                                                ? 'about 🙋🏽‍♂️'
+                                                : 'about',
                                             style: TextStyle(
                                                 color: AppearanceManager()
                                                     .color
