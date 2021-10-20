@@ -395,14 +395,10 @@ class _RedeemDialogState extends State<RedeemDialog> {
   }
 
   Future<void> _createAnchoredBanner(BuildContext context) async {
-    if (_adBannerLoadingStatus == AdLoadingStatus.dontShowAds) {
-      print('not showing ads');
-    }
     if (_adBannerLoadingStatus == AdLoadingStatus.dontShowAds ||
         _adBannerLoadingStatus == AdLoadingStatus.loading) {
       return;
     }
-    print('loading ad');
     _adBannerLoadingStatus = AdLoadingStatus.loading;
 
     final BannerAd banner = BannerAd(
