@@ -22,7 +22,6 @@ dependencies:
   carousel_slider: ^4.0.0
   bubble: ^1.2.1
   flutter_html: ^2.1.1
-  html: ^0.15.0
   device_apps: ^2.1.1
   package_info: ^2.0.2
   flutter_animation_progress_bar: ^2.0.1
