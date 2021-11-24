@@ -247,23 +247,15 @@ class Preferences {
     }
   }
 
-  bool get isAppUpgradable {
-    return appInStoreVersion > int.parse(_packageInfo.buildNumber);
-  }
-
-  bool get isRedeemApiVersionSupported {
-    return redeemApiVersion <= kRedeemApiVersion;
-  }
-
-  bool get isRedeemApiVersionUpgradable {
-    return redeemApiVersion <= appInStoreApiVersionSupport;
-  }
-
-  bool get isChristmasTime {
-    return forceChristmasTheme ||
-        DateTime.now().isAfter(_christmasThemeStartDate) &&
-            DateTime.now().isBefore(_christmasThemeEndDate);
-  }
+  int get appVersion => int.parse(_packageInfo.buildNumber);
+  bool get isAppUpgradable => appInStoreVersion > appVersion;
+  bool get isRedeemApiVersionSupported => redeemApiVersion <= kRedeemApiVersion;
+  bool get isRedeemApiVersionUpgradable =>
+      redeemApiVersion <= appInStoreApiVersionSupport;
+  bool get isChristmasTime =>
+      forceChristmasTheme ||
+      DateTime.now().isAfter(_christmasThemeStartDate) &&
+          DateTime.now().isBefore(_christmasThemeEndDate);
 
   void updateRedeemedCodes(List<RedemptionCode> redeemed) {
     for (RedemptionCode redeemedCode in redeemed) {

@@ -114,8 +114,7 @@ class AfkRedeemApi {
       return AppMessage.fromJson(appMessagesJsonReader);
     }).toList();
     for (AppMessage appMessage in appMessages) {
-      if (DateTime.now().isBefore(appMessage.expiresAt) &&
-          !appMessage.wasShown) {
+      if (appMessage.shouldShow) {
         // new non-expired message
         if (!appMessage.isSkippable) {
           // message is non-skippable - show it
