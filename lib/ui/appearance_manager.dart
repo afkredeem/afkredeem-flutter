@@ -30,6 +30,8 @@ class AppearanceManager {
     UserMessage.missingUserId: 'Set User ID',
     UserMessage.cantBeEmpty: 'Can\'t be empty',
     UserMessage.copiedToClipboard: 'Copied to clipboard',
+    UserMessage.redeemFrequencyError:
+        'Oh no 😕\n\nWe received a redeem frequency error.\nTry redeeming the codes one by one.\n\nIf this problem persists please contact us 🙏🏼'
   };
 
   Map<UserMessage, String> get userMessages => _userMessages;

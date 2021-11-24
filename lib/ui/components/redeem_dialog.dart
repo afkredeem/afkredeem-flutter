@@ -92,6 +92,8 @@ class _RedeemDialogState extends State<RedeemDialog> {
   List<AccountRedeemSummary> accountRedeemSummaries = [];
   UserMessage? errorMessage;
   int progress = 0;
+  int codesRedeemed = 0;
+  String progressMessage = "";
   bool selectAccount = false;
   bool showContinueButton = false;
 
@@ -103,6 +105,8 @@ class _RedeemDialogState extends State<RedeemDialog> {
       accountRedeemSummaries = [];
       errorMessage = null;
       progress = 0;
+      codesRedeemed = 0;
+      progressMessage = "";
       selectAccount = false;
       showContinueButton = false;
       redeemDialogState = RedeemDialogState.fillForm;
@@ -127,10 +131,26 @@ class _RedeemDialogState extends State<RedeemDialog> {
     });
   }
 
-  void _progressUpdate(int progress) async {
+  void _progressUpdate(int progress, int codesRedeemed, String message) async {
     setState(() {
       this.progress = progress;
+      this.codesRedeemed = codesRedeemed;
     });
+    if (message != '') {
+      Future.delayed(kProgressBarAnimatedDuration, () {
+        setState(() {
+          this.progressMessage = message;
+        });
+      });
+      Future.delayed(
+          kProgressBarAnimatedDuration +
+              Duration(milliseconds: Preferences().redeemFrequencyLimitMilli),
+          () {
+        setState(() {
+          this.progressMessage = '';
+        });
+      });
+    }
     if (progress == 100) {
       await Future.delayed(
           kProgressBarAnimatedDuration + kProgressBarExtraWaitAnimationFinish);
@@ -403,8 +423,8 @@ class _RedeemDialogState extends State<RedeemDialog> {
 
     final BannerAd banner = BannerAd(
       size: AdSize(
-        height: (0.85 * AdSize.mediumRectangle.height).round(),
-        width: (0.85 * AdSize.mediumRectangle.width).round(),
+        height: (0.8 * AdSize.mediumRectangle.height).round(),
+        width: (0.8 * AdSize.mediumRectangle.width).round(),
       ),
       request: adRequest,
       adUnitId: Platform.isAndroid
@@ -658,21 +678,26 @@ class _RedeemDialogState extends State<RedeemDialog> {
               ),
             ),
           if (showContinueButton)
-            Center(
-              child: ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    redeemDialogState = RedeemDialogState.summary;
-                  });
-                },
-                style: ElevatedButton.styleFrom(
-                  minimumSize: Size(40, 40),
+            Column(
+              children: [
+                SizedBox(height: 20),
+                Center(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      setState(() {
+                        redeemDialogState = RedeemDialogState.summary;
+                      });
+                    },
+                    style: ElevatedButton.styleFrom(
+                      minimumSize: Size(40, 40),
+                    ),
+                    child: Text(
+                      'Summary',
+                      style: TextStyle(fontSize: 16.0),
+                    ),
+                  ),
                 ),
-                child: Text(
-                  'Summary',
-                  style: TextStyle(fontSize: 16.0),
-                ),
-              ),
+              ],
             ),
           if (!showContinueButton && !selectAccount)
             Column(
@@ -680,26 +705,41 @@ class _RedeemDialogState extends State<RedeemDialog> {
                 SizedBox(height: 9),
                 Container(
                   width: _adBanner != null
-                      ? 0.65 *
+                      ? 0.8 *
                           _adBanner!.size.width
                               .toDouble() // prevent weird progress bar from dancing
                       : 200,
-                  child: Center(
-                    child: FAProgressBar(
-                      currentValue: progress,
-                      displayText: '%',
-                      backgroundColor:
-                          AppearanceManager().color.dialogBackgroundOverlay,
-                      progressColor: AppearanceManager().color.main,
-                      animatedDuration: kProgressBarAnimatedDuration,
-                      displayTextStyle: TextStyle(
-                        fontSize: 16.0,
-                        color: AppearanceManager().color.snackBarText,
+                  child: Column(
+                    children: [
+                      Text(
+                        (widget.redemptionCodes?.length ?? 1) > 1
+                            ? '$codesRedeemed/${widget.redemptionCodes?.length ?? 1}'
+                            : '',
+                        style: TextStyle(
+                          color: AppearanceManager().color.main,
+                          fontSize: 17.0,
+                        ),
                       ),
-                    ),
+                      SizedBox(height: 8),
+                      Center(
+                        child: FAProgressBar(
+                          currentValue: progress,
+                          displayText: '%',
+                          backgroundColor:
+                              AppearanceManager().color.dialogBackgroundOverlay,
+                          progressColor: AppearanceManager().color.main,
+                          animatedDuration: kProgressBarAnimatedDuration,
+                          displayTextStyle: TextStyle(
+                            fontSize: 16.0,
+                            color: AppearanceManager().color.snackBarText,
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 16),
+                      Text(progressMessage),
+                    ],
                   ),
                 ),
-                SizedBox(height: 9),
               ],
             ),
         ],

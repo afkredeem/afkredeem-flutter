@@ -5,6 +5,7 @@ enum UserMessage {
   missingUserId,
   cantBeEmpty,
   copiedToClipboard,
+  redeemFrequencyError,
 }
 
 typedef UserErrorHandler = Function(UserMessage error);

@@ -30,6 +30,7 @@ class Preferences {
   static const String _kAppInStoreVersion = 'appInStoreVersion';
   static const String _kAndroidStoreAppVersion = 'androidStoreAppVersion';
   static const String _kIosStoreAppVersion = 'iosStoreAppVersion';
+  static const String _kRedeemFrequencyLimitMilli = 'redeemFrequencyLimitMilli';
   static const String _kRedeemApiVersion = 'redeemApiVersion';
   static const String _kAppInStoreApiVersionSupport =
       'appInStoreApiVersionSupport';
@@ -53,6 +54,7 @@ class Preferences {
   bool _wasManualRedeemMessageShown;
   bool _forceChristmasTheme;
   int _appInStoreVersion;
+  int _redeemFrequencyLimitMilli;
   int _redeemApiVersion;
   int _appInStoreApiVersionSupport;
   DateTime _christmasThemeStartDate;
@@ -70,6 +72,7 @@ class Preferences {
   bool get wasManualRedeemMessageShown => _wasManualRedeemMessageShown;
   bool get forceChristmasTheme => _forceChristmasTheme;
   int get appInStoreVersion => _appInStoreVersion;
+  int get redeemFrequencyLimitMilli => _redeemFrequencyLimitMilli;
   int get redeemApiVersion => _redeemApiVersion;
   int get appInStoreApiVersionSupport => _appInStoreApiVersionSupport;
   DateTime get christmasThemeStartDate => _christmasThemeStartDate;
@@ -119,6 +122,11 @@ class Preferences {
   set appInStoreVersion(int value) {
     _appInStoreVersion = value;
     _prefs.setInt(_kAppInStoreVersion, value);
+  }
+
+  set redeemFrequencyLimitMilli(int value) {
+    _redeemFrequencyLimitMilli = value;
+    _prefs.setInt(_kRedeemFrequencyLimitMilli, value);
   }
 
   set redeemApiVersion(int value) {
@@ -176,6 +184,9 @@ class Preferences {
         _forceChristmasTheme = _prefs.getBool(_kForceChristmasTheme) ?? false,
         _appInStoreVersion =
             _prefs.getInt(_kAppInStoreVersion) ?? kDefaultAppInStoreVersion,
+        _redeemFrequencyLimitMilli =
+            _prefs.getInt(_kRedeemFrequencyLimitMilli) ??
+                kDefaultRedeemFrequencyLimit,
         _redeemApiVersion =
             _prefs.getInt(_kRedeemApiVersion) ?? kDefaultRedeemApiVersion,
         _appInStoreApiVersionSupport =
@@ -214,6 +225,7 @@ class Preferences {
     );
     showAds = jsonReader.read(_kShowAds);
     showBuyMeCoffeeLink = jsonReader.read(_kShowBuyMeCoffeeLink);
+    redeemFrequencyLimitMilli = jsonReader.read(_kRedeemFrequencyLimitMilli);
     redeemApiVersion = jsonReader.read(_kRedeemApiVersion);
     if (Platform.isAndroid) {
       appInStoreVersion = jsonReader.read(_kAndroidStoreAppVersion);

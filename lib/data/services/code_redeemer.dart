@@ -3,6 +3,7 @@ import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:cookie_jar/cookie_jar.dart';
 
 import 'package:afk_redeem/data/consts.dart';
+import 'package:afk_redeem/data/preferences.dart';
 import 'package:afk_redeem/data/redemption_code.dart';
 import 'package:afk_redeem/data/user_message.dart';
 import 'package:afk_redeem/data/json_reader.dart';
@@ -15,9 +16,11 @@ enum AccountRedeemStrategy {
   select,
 }
 
+class FrequencyException implements Exception {}
+
 class RedeemHandlers {
   Function() redeemRunningHandler;
-  Function(int) progressHandler;
+  Function(int, int, String) progressHandler;
   Function(List<AccountInfo> accounts) accountSelectionHandler;
   RedeemSummaryFunction redeemCompletedHandler;
   UserErrorHandler userErrorHandler;
@@ -32,14 +35,13 @@ class RedeemHandlers {
 }
 
 class CodeRedeemer {
-  static const int kInitRequests = 2;
   String uid;
   AccountRedeemStrategy accountRedeemStrategy;
   String verificationCode;
   Set<RedemptionCode> redemptionCodes;
   RedeemHandlers handlers;
-  int totalRequests;
-  int requestsCompleted = 0;
+  int userAccounts = 0;
+  int codesRedeemed = 0;
   int progress = 0;
   Dio _dio = Dio();
   CookieJar _cookieJar = CookieJar();
@@ -51,7 +53,7 @@ class CodeRedeemer {
     required this.verificationCode,
     required this.redemptionCodes,
     required this.handlers,
-  }) : totalRequests = kInitRequests + redemptionCodes.length {
+  }) {
     _dio.interceptors.add(CookieManager(_cookieJar));
     _dio.options.connectTimeout = kConnectTimeoutMilli;
     _dio.options.receiveTimeout = kReceiveTimeoutMilli;
@@ -70,6 +72,10 @@ class CodeRedeemer {
     } on JsonReaderException catch (ex) {
       handlers.userErrorHandler(UserMessage.parseError);
       ex.report();
+    } on FrequencyException catch (ex) {
+      handlers.userErrorHandler(UserMessage.redeemFrequencyError);
+      ErrorReporter.report(ex,
+          'Redeem frequency error on connection to ${kLinks.lilithRedeemHost}');
     } catch (ex) {
       handlers.userErrorHandler(UserMessage.parseError);
       ErrorReporter.report(ex,
@@ -140,13 +146,10 @@ class CodeRedeemer {
   Future<void> _redeemForAccount({AccountInfo? selectedAccount}) async {
     List<AccountInfo> accountsForSelection = [];
     List<Future<AccountRedeemSummary>> accountRedeemSummaries = [];
-    int concurrentConsumeOperations = 0;
     if ((accountsJsonReader.read('info') ?? 'not-ok') == 'ok') {
       List<dynamic> users =
           accountsJsonReader.readFrom(accountsJsonReader.read('data'), 'users');
-      if (accountRedeemStrategy == AccountRedeemStrategy.allAccounts) {
-        totalRequests += (users.length - 1) * redemptionCodes.length;
-      }
+      userAccounts = users.length;
       for (Map<String, dynamic> user in users) {
         AccountInfo account = AccountInfo(
           accountsJsonReader.readFrom(user, 'uid'),
@@ -158,15 +161,10 @@ class CodeRedeemer {
             selectedAccount == null) {
           accountsForSelection.add(account);
         } else if (_shouldRedeemForUser(account, selectedAccount)) {
-          if (concurrentConsumeOperations >=
-              kConcurrentConsumeRequestsSoftLimit) {
-            await Future.wait(accountRedeemSummaries);
-            concurrentConsumeOperations = 0;
-          }
-          concurrentConsumeOperations += redemptionCodes.length;
-          accountRedeemSummaries.add(
-            _consumeForAccount(account),
-          );
+          // apparently AFK Arena will measure each account separately when
+          // limiting frequency (responding with info=err_freq_limit) so we can
+          // parallelize consuming for each account (and sleep inside per account)
+          accountRedeemSummaries.add(_consumeForAccount(account));
         }
       }
     }
@@ -180,15 +178,16 @@ class CodeRedeemer {
           'empty accountRedeemSummaries list for ${kUris.usersUri} response: ${accountsJsonReader.json}');
       return;
     }
-    concurrentConsumeOperations = 0;
     handlers.redeemCompletedHandler(await Future.wait(accountRedeemSummaries));
   }
 
   Future<AccountRedeemSummary> _consumeForAccount(AccountInfo account) async {
     AccountRedeemSummary accountRedeemSummary = AccountRedeemSummary(account);
 
+    int counter = 0;
     await Future.forEach(redemptionCodes,
         (RedemptionCode redemptionCode) async {
+      counter++;
       Map<String, dynamic>? queryParams;
       if (kLinks.toggleEmulatedRedeemResponses) {
         queryParams = {'toggle-responses': null}; // mock server option
@@ -203,6 +202,7 @@ class CodeRedeemer {
       ''';
       Response response = await _sendRequest(kUris.consumeUri,
           postData: postData, queryParameters: queryParams);
+      _handleCodeRedeemedProgress();
       JsonReader jsonReader = JsonReader(
         context:
             'Redeemer reading response from ${kLinks.lilithRedeemHost}${kUris.consumeUri} with code=${redemptionCode.code}',
@@ -227,9 +227,16 @@ class CodeRedeemer {
             accountRedeemSummary.expiredCodes.add(redemptionCode);
           }
           break;
+        case 'err_freq_limit':
+          throw FrequencyException();
         default:
           throw JsonReaderException(
               'Unknown ${kUris.consumeUri} \'info\' value \'$info\'');
+      }
+      if (counter != redemptionCodes.length) {
+        // sleep if not last (to avoid AFK Arena backoff timer causing info=err_freq_limit)
+        await Future.delayed(
+            Duration(milliseconds: Preferences().redeemFrequencyLimitMilli));
       }
     });
 
@@ -266,12 +273,22 @@ class CodeRedeemer {
         },
       ),
     );
-    requestsCompleted++;
-    // prevent progress from decreasing due to totalRequests update
-    if ((100 * requestsCompleted / totalRequests).round() > progress) {
-      progress = (100 * requestsCompleted / totalRequests).round();
-    }
-    handlers.progressHandler(progress);
     return response;
+  }
+
+  void _handleCodeRedeemedProgress() {
+    codesRedeemed++;
+    int codesRedeemedCrossAccounts = 0;
+    String codesRedeemedMessage = '';
+    if (userAccounts != 0) {
+      codesRedeemedCrossAccounts = (codesRedeemed / userAccounts).round();
+      progress =
+          (100 * codesRedeemedCrossAccounts / redemptionCodes.length).round();
+      if (codesRedeemed % userAccounts == 0 && progress != 100) {
+        codesRedeemedMessage = '⏳ Redeem frequency limit';
+      }
+    }
+    handlers.progressHandler(
+        progress, codesRedeemedCrossAccounts, codesRedeemedMessage);
   }
 }

@@ -11,6 +11,7 @@ const kMinPasteManualRedemptionCodeLength = 5;
 const kMaxPasteManualRedemptionCodeLength = 15;
 
 const kDefaultAppInStoreVersion = 1;
+const kDefaultRedeemFrequencyLimit = 5000;
 const kDefaultRedeemApiVersion = 1;
 const kDefaultAppInStoreApiVersionSupport = 1;
 
@@ -21,8 +22,6 @@ const List<String> kAdsKeywords = [
   'gaming',
   'rpg'
 ];
-
-const int kConcurrentConsumeRequestsSoftLimit = 10;
 
 const int kManualRedeemApiBrutusMessageId = 1;
 
