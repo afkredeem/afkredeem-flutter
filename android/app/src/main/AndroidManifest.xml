@@ -2,12 +2,13 @@
     package="com.afkredeem">
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
-   <application
+    <application
         android:name="androidx.multidex.MultiDexApplication"
         android:label="AFK Redeem"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
+            android:exported="true"
             android:launchMode="singleTop"
             android:theme="@style/LaunchTheme"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"

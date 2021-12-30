@@ -34,7 +34,7 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 29
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
@@ -43,7 +43,7 @@ android {
     defaultConfig {
         applicationId "com.afkredeem"
         minSdkVersion 19
-        targetSdkVersion 31
+        targetSdkVersion 30
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         multiDexEnabled true
