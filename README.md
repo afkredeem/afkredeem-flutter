@@ -78,15 +78,14 @@ With regards to crashlytics, any error / crash the app experiences is anonymousl
 Nevertheless, the app presents a disclosure dialog on first startup summarizing the above information with a link to this repo.
 
 ## Funds
-<!--- so you're most welcome to [buy me a ☕][buy-me-coffee]. --->
-Well, there aren't any really 😅\
+Well, there aren't any really 😅 but you can [buy me a ☕][buy-me-coffee]\
 Any imaginable expense (from the [afkredeem.com][afk-redeem] domain, through app stores costs, to development time & effort), was personally paid for.\
 Which brings us to the next point.
 
 ## Ads
 An ad banner is displayed while the app is redeeming codes. Ads are configured to be non personalized and use a static keywords list (see [consts.dart]).
 The humble ads income helps covering the initial expenses mentioned above, maintenance of the app's services, as well as ongoing expenses (WTF apple).
-Moreover, if future funds will allow it perhaps an automated notification server can be implemented & deployed in a cloud env.
+Moreover, if future funds will allow it perhaps an automated notification server can be implemented & deployed in aws or smth.
 
 ## Community Engagement
 The more the merrier
@@ -98,7 +97,7 @@ Please refer to the [issues] section to review or submit any feature request or 
 
 ----
 
-<!--- [![coffee](README.images/coffee.png)][buy-me-coffee]&nbsp; --->
+[![coffee](README.images/coffee.png)][buy-me-coffee]&nbsp;
 [![afkredeem.com](README.images/globe.png)][afk-redeem]&nbsp;
 [![reddit](README.images/reddit.png)][reddit-account]&nbsp;
 [![email](README.images/email.png)][email]
