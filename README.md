@@ -43,7 +43,9 @@ So the best move for mitigating those concerns was to publish the source code,
 and disclose how the app operates for any member of the community to review and confirm there's no monkey business 🙉🙈🙊.\
 That being said, in order to protect the app, the [license] for the sources provided in this repo is non-commercial Share-Alike.
 
-## What is Saved & Where
+## Privacy Policy
+
+### What is Saved & Where
 The app doesn't store any information outside the phone.\
 Moreover, the app also does not require local storage permissions.\
 Everything the app saves locally boils down to simple key value stores provided by either Android / iOS platforms (aka [shared_preferences])\
@@ -51,7 +53,7 @@ Everything the app saves locally boils down to simple key value stores provided 
 The only user-generated data saved on the phone is the `user ID` entered by the user on first startup.\
 Other than that the app saves its internal configuration (redeem api supported versions, codes list, etc.) and trivial UI flags (e.g. disclosure consent, hypogean/celestial mode or whether specific brutus messages were already shown).
 
-## What is sent & Where to
+### What is sent & Where to
 The app uses 2.5 network interfaces.
 - Downloading the current list of codes from afkredeem.com upon startup / refresh\
   Receiving also in the same GET: general configuration such as redeemer api version support, brutus messages, etc.\
