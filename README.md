@@ -68,16 +68,16 @@ The app uses 2.5 network interfaces.
   This messaging framework uses platform-specific transport service (Android / iOS),
   facilitating notifications while saving the app the hassle of running any battery guzzling background workers.
 
-## Push Notifications
-The app uses [Firebase Cloud Messaging][firebase-messaging] solution to receive push notifications sent from the AFK Redeem account.
-The app maintainers will issue notifications (currently manually) only in the event of a new redemption codes.
-Since both Android & iOS provide means to silence / mute any app's notifications, such configuration setting is not implemented in the app.
-
-## Analytics & Crashlytics
+### Analytics & Crashlytics
 The app uses [Firebase Analytics][firebase-analytics] and [Firebase Crashlytics][firebase-crashlytics] services.\
 As far as analytics go, only redeem & ad events are (anonymously) logged on top of the most basic default analytics firebase has to offer.\
 With regards to crashlytics, any error / crash the app experiences is anonymously reported via firebase.\
 Nevertheless, the app presents a disclosure dialog on first startup summarizing the above information with a link to this repo.
+
+## Push Notifications
+The app uses [Firebase Cloud Messaging][firebase-messaging] solution to receive push notifications sent from the AFK Redeem account.
+The app maintainers will issue notifications (currently manually) only in the event of a new redemption codes.
+Since both Android & iOS provide means to silence / mute any app's notifications, such configuration setting is not implemented in the app.
 
 ## Funds
 Well, there aren't any really 😅 but you can [buy me a ☕][buy-me-coffee]\
